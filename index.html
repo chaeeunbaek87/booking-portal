@@ -4391,6 +4391,32 @@ async function uploadDraftImages(d, pathPrefix){
   }
 }
 let _fbLastSynced='';
+/* Firestore 문서는 1MiB 제한이 있어 base64 이미지(data:)를 그대로 올리면 저장 자체가 실패합니다.
+   → 동기화 payload에서는 이미지 원본을 자리표시자로 바꿔 보내고, 받을 때 로컬 이미지를 되살립니다.
+   (Supabase Storage가 연결돼 있으면 이미지는 https URL이 되어 그대로 동기화됩니다) */
+const LOCAL_IMG='__LOCAL_IMAGE__';
+function slimForSync(state){
+  return JSON.parse(JSON.stringify(state, (k,v)=> (typeof v==='string'&&v.startsWith('data:')) ? LOCAL_IMG : v));
+}
+function restoreLocalImgs(rc, lc){
+  if(!rc) return rc;
+  (rc.items||[]).forEach(ri=>{
+    const li=lc&&lc.items&&lc.items.find(x=>x.p===ri.p);
+    if(ri.creative&&Array.isArray(ri.creative.imgs)){
+      ri.creative.imgs=ri.creative.imgs.map((im,i)=>{
+        if(im&&im.src===LOCAL_IMG){
+          const lim=li&&li.creative&&Array.isArray(li.creative.imgs)?li.creative.imgs[i]:null;
+          return (lim&&lim.src&&lim.src!==LOCAL_IMG)?lim:null;
+        }
+        return im;
+      });
+    }
+  });
+  if(Array.isArray(rc.previewImgs))
+    rc.previewImgs=rc.previewImgs.map((u,i)=> u===LOCAL_IMG ? ((lc&&lc.previewImgs&&lc.previewImgs[i])||null) : u).filter(Boolean);
+  return rc;
+}
+let _syncWarnAt=0;
 const dirtyCamps=new Set();                 /* 아직 서버에 반영되지 않은 로컬 변경 캠페인 */
 const deletedCamps=new Set();               /* 이번 세션에서 삭제한 부킹 — 스냅샷으로 되살아나지 않게 */
 function markDirty(id){ if(id) dirtyCamps.add(id); }
@@ -4399,11 +4425,17 @@ function fbScheduleSync(){
   if(!window.FB||!me) return;
   clearTimeout(window.__fbTimer);
   window.__fbTimer=setTimeout(async ()=>{
-    const snapshot=JSON.stringify({CAMPAIGNS,ACCOUNTS});
+    const payload=slimForSync({CAMPAIGNS,ACCOUNTS});
+    const snapshot=JSON.stringify(payload);
     if(snapshot===_fbLastSynced) return;
     _fbLastSynced=snapshot;
-    try{ await window.FB.pushState({CAMPAIGNS,ACCOUNTS}); dirtyCamps.clear(); }
-    catch(e){ _fbLastSynced=''; console.warn('cloud sync failed', e); }
+    try{ await window.FB.pushState(payload); dirtyCamps.clear(); }
+    catch(e){
+      _fbLastSynced='';
+      console.warn('cloud sync failed', e);
+      if(Date.now()-_syncWarnAt>60000){ _syncWarnAt=Date.now(); toast('⚠️ 클라우드 동기화에 실패했어요 — 잠시 후 다시 시도합니다'); }
+      setTimeout(fbScheduleSync, 4000);   /* 실패 시 자동 재시도 */
+    }
   },500);
 }
 ['board','material','calendar','accounts','fin','products','setup'].forEach(k=>{
@@ -4417,14 +4449,14 @@ function mergeRemoteCampaigns(remoteList){
   const local={}; CAMPAIGNS.forEach(c=>local[c.id]=c);
   const list=remoteList.filter(r=>!deletedCamps.has(r.id));   /* 삭제한 부킹은 되살리지 않음 */
   const ids=new Set(list.map(r=>r.id));
-  const merged=list.map(rc=> (dirtyCamps.has(rc.id)&&local[rc.id]) ? local[rc.id] : rc);
+  const merged=list.map(rc=> (dirtyCamps.has(rc.id)&&local[rc.id]) ? local[rc.id] : restoreLocalImgs(rc, local[rc.id]));
   return merged.concat(CAMPAIGNS.filter(c=>!ids.has(c.id)&&!deletedCamps.has(c.id)));
 }
 function fbStartSync(){
   if(!window.FB) return;
   window.FB.subscribeState(remote=>{
     if(!remote) return;
-    const snapshot=JSON.stringify({CAMPAIGNS:remote.CAMPAIGNS||CAMPAIGNS,ACCOUNTS:remote.ACCOUNTS||ACCOUNTS});
+    const snapshot=JSON.stringify({CAMPAIGNS:remote.CAMPAIGNS||[],ACCOUNTS:remote.ACCOUNTS||[]});
     if(snapshot===_fbLastSynced) return;   /* 내가 방금 보낸 변경 — 재렌더 생략 */
     _fbLastSynced=snapshot;
     if(remote.CAMPAIGNS) CAMPAIGNS=mergeRemoteCampaigns(remote.CAMPAIGNS);
