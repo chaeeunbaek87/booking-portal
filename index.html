@@ -187,6 +187,16 @@ textarea.text-input{resize:none;line-height:1.5}
 .upload-done .meta .dim{font-size:12px;margin-top:2px;font-weight:600}
 .dim.ok{color:var(--hd-green)}
 .dim.bad{color:var(--warn)}
+.fin-det .fe{width:100%;box-sizing:border-box;border:1px solid var(--line-soft);border-radius:7px;padding:5px 7px;font-family:inherit;font-size:11.5px;background:#fff}
+.fin-det .fe:focus{outline:none;border-color:var(--hd-green)}
+.fin-det .fe-sm{margin-top:4px;font-size:10.5px;color:var(--ink-3)}
+.fin-det .fe-dt{margin-bottom:4px}
+.fin-det .fe-n{text-align:right;font-variant-numeric:tabular-nums}
+.fin-det .fe-st{width:calc(100% - 26px);display:inline-block}
+.fin-det .fe-del{width:22px;height:26px;margin-left:4px;border:1px solid var(--line-soft);border-radius:7px;background:#fff;color:var(--warn);font-weight:800;font-size:11px;cursor:pointer;vertical-align:top}
+.fe-add{margin:8px 0 2px;border:1px dashed var(--line-soft);background:#fff;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink-2);cursor:pointer}
+.fe-add:hover{border-color:var(--hd-green);color:var(--hd-deep)}
+.fin-det tr.fe-row td{vertical-align:top}
 .upload-done .rm{color:var(--ink-3);font-size:12px;font-weight:600;flex-shrink:0;padding:6px 10px;border-radius:8px}
 .upload-done .rm:hover{background:#fff;color:var(--warn)}
 .src-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--hd-green);border-radius:12px;background:var(--hd-green-soft);margin-top:8px}
@@ -1268,9 +1278,12 @@ textarea.text-input{resize:none;line-height:1.5}
 .tl-head{grid-template-columns:230px 1fr;min-width:1420px}
 .tl-row{grid-template-columns:230px 1fr;min-width:1420px;background:#fff;border:1px solid #E9EEEB;border-radius:12px;margin:8px 0;border-bottom:none}
 .tl-lab{padding:11px 10px 11px 14px}
-.tl-st{display:inline-block;font-size:9.5px;font-weight:800;background:#EEF3F0;color:var(--hd-deep);border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:1px}
+.tl-stw{margin-top:5px}
+.tl-st{display:inline-block;font-size:9.5px;font-weight:800;background:#EEF3F0;color:var(--hd-deep);border-radius:6px;padding:2px 7px}
 .tl-days{display:grid;grid-template-columns:repeat(28,1fr);border-bottom:1px solid #F0F2F1}
-.tl-days span{font-size:10px;font-weight:800;color:#6B7684;text-align:center;padding:6px 0 5px;border-left:1px dashed #F2F4F3;line-height:1.25}
+.tl-days span{font-size:10px;font-weight:800;color:#6B7684;padding:6px 0 5px;border-left:1px dashed #F2F4F3;line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px}
+.tl-days span b.dn{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:50%;font-weight:800;font-size:10px}
+.tl-days span b.dn.tdy{background:#3182F6;color:#fff}
 .tl-days span i{display:block;font-style:normal;font-weight:600;font-size:8.5px;color:#B0B8C1}
 .tl-days span.we, .tl-days span.we i{color:#D06A5A}
 .tl-grid{grid-template-columns:repeat(28,1fr)}
@@ -1280,7 +1293,7 @@ textarea.text-input{resize:none;line-height:1.5}
 .tl-row:hover .tl-lab{background:#FAFCFB}
 .tl-row{overflow:hidden}   /* 좌우 모서리 모두 동일하게 둥글게 */
 .tl-today{left:calc(100%/28*0.5)}
-.tl-bar{gap:3px;padding:0 6px}
+.tl-bar{gap:3px;padding:4px 6px;height:auto;min-height:28px;flex-wrap:wrap;row-gap:3px;white-space:normal;align-content:center}
 .tl-bar .tc{font-style:normal;font-size:9px;font-weight:800;color:var(--hd-deep);background:#fff;border:1px solid #D5E8DD;border-radius:5px;padding:1.5px 5px;white-space:nowrap}
 .tl-bar.live .tc{border-color:transparent}
 .tl-bar.done .tc{color:#9AA39D;border-color:#E5E9E7}
@@ -1737,20 +1750,22 @@ init();
     <div class="day-panel" id="dayPanel"></div>
   </div>
   <div class="board-wrap show" id="adminTlWrap" style="max-width:1780px;display:none">
-    <h3 style="margin:0 0 8px;font-size:15.5px" id="calTitle">내 부킹 현황</h3>
+    <h3 style="margin:0 0 8px;font-size:15.5px" id="calTitle">내 광고 스케줄</h3>
     <div style="display:flex;align-items:center;gap:10px;margin:0 0 10px">
       <button type="button" id="tlPrev" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">‹</button>
       <b id="tlYm" style="font-size:15px;letter-spacing:-.3px"></b>
       <button type="button" id="tlNext" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">›</button>
     </div>
     <div class="tl-wrap"><div id="adminTl"></div></div>
-    <h3 style="margin:26px 0 8px;font-size:15.5px">전체 구좌 현황</h3>
-    <div style="display:flex;align-items:center;gap:10px;margin:0 0 10px">
-      <button type="button" id="slotPrev" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">‹</button>
-      <b id="slotYm" style="font-size:15px;letter-spacing:-.3px"></b>
-      <button type="button" id="slotNext" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">›</button>
+    <div id="slotDayWrap">
+      <h3 style="margin:26px 0 8px;font-size:15.5px">전체 구좌 현황</h3>
+      <div style="display:flex;align-items:center;gap:10px;margin:0 0 10px">
+        <button type="button" id="slotPrev" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">‹</button>
+        <b id="slotYm" style="font-size:15px;letter-spacing:-.3px"></b>
+        <button type="button" id="slotNext" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">›</button>
+      </div>
+      <div class="slot-table-wrap"><table class="slot-table" id="slotDayTbl"></table></div>
     </div>
-    <div class="slot-table-wrap"><table class="slot-table" id="slotDayTbl"></table></div>
   </div>
 </div>
 
@@ -1759,7 +1774,7 @@ init();
 <div class="board-wrap show" style="padding:0;max-width:1000px">
   <div class="card" style="margin-bottom:16px">
     <div class="card-head"><h2>월별 정산</h2><span class="opt">판매실적대장(2026) + 포털 신규 부킹 실시간 집계 · VAT 별도</span>
-      <span style="margin-left:auto"><button class="dl-btn" id="finCsv" type="button">CSV 다운로드</button></span></div>
+      <span style="margin-left:auto;display:flex;gap:8px"><button class="dl-btn" id="finEditBtn" type="button">✏ 내용 수정</button><button class="dl-btn" id="finCsv" type="button">CSV 다운로드</button></span></div>
     <div class="board-tools" style="margin-bottom:10px"><span id="finTabs" style="display:flex;gap:8px"></span></div>
     <table class="tbl" id="finTbl"></table>
   </div>
@@ -1996,20 +2011,6 @@ CAMPAIGNS.forEach((c,i)=>c.reqAt=i+1);
 /* 2026.06까지 확정 실적 (기존 정산 데이터 이관분) */
 /* 판매 실적 — 「RMN_판매실적대장_20260825.xlsx」 기준 (2026-08-25 업데이트)
    건수·매출은 대장 원본 그대로이며, 입금가는 판매사 기준(직거래 100% · 대행사 70%)으로 산출합니다. */
-const FIN_BASE = [
- ["2026.01",2,40000000,28000000],
- ["2026.02",4,30000000,21000000],
- ["2026.03",9,89500000,67300000],
- ["2026.04",8,43000000,34300000],
- ["2026.05",14,116073000,88451100],
- ["2026.06",3,25000000,25000000],
- ["2026.07",4,40500000,28350000],
- ["2026.08",7,30000000,30000000],
- ["2026.09",5,22000000,15400000],
- ["2026.10",14,48850000,48850000],
- ["2026.11",19,69000000,54900000],
- ["2026.12",12,79200000,62040000],
-];
 const FIN_DETAIL = [["2026.01", "랜드로버 디펜더, 벨라", "나스미디어", "2026-01-04", "2026-01-31", 40000000, 28000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.02", "랜드로버 디펜더, 벨라", "나스미디어", "2026-02-01", "2026-02-14", 20000000, 14000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.02", "랜드로버 디펜더, 벨라", "나스미디어", "2026-02-22", "2026-02-28", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.03", "부쉐론", "나스미디어", "2026-03-09", "2026-03-22", 44000000, 30800000, 5, "앱 헤드라인 뉴스 · 앱 하단 배너 · 앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업", "완료"], ["2026.03", "샤넬", "직거래", "2026-03-15", "2026-03-15", 12500000, 12500000, 1, "카카오톡 발송", "완료"], ["2026.03", "랜드로버 디펜더", "나스미디어", "2026-03-15", "2026-03-30", 30000000, 21000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.03", "샤넬", "직거래", "2026-03-15", "2026-03-15", 3000000, 3000000, 1, "앱 푸시 발송", "완료"], ["2026.04", "랜드로버 디펜더", "나스미디어", "2026-04-05", "2026-04-11", 10000000, 7000000, 2, "앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.04", "로베에", "M2Digital", "2026-04-15", "2026-04-28", 9000000, 6300000, 1, "앱 오픈 팝업", "완료"], ["2026.04", "랜드로버 디펜더", "나스미디어", "2026-04-19", "2026-04-25", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.04", "현대자동차", "직거래", "2026-04-21", "2026-05-21", 14000000, 14000000, 3, "앱 이벤트 메뉴 · 앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.05", "구찌", "나스미디어", "2026-04-30", "2026-05-06", 38073000, 26651100, 3, "앱 메인 배너 · 앱 오픈 팝업 · 앱 스플래시", "완료"], ["2026.05", "샤넬", "직거래", "2026-05-03", "2026-05-03", 14000000, 14000000, 2, "카카오톡 메시지 발송 · IG스토리(s)", "완료"], ["2026.05", "한섬", "직거래", "2026-05-14", "2026-05-20", 10000000, 10000000, 2, "앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.05", "아우디", "인크로스", "2026-05-19", "2026-05-25", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.05", "부쉐론", "나스미디어", "2026-05-25", "2026-06-07", 44000000, 30800000, 5, "앱 오픈 팝업 · 앱 스플래시 · 앱 헤드라인 뉴스 · 앱 메인 배너 · 앱 하단 배너", "완료"], ["2026.06", "샤넬", "직거래", "2026-06-12", "2026-06-12", 25000000, 25000000, 3, "앱 푸시 11만명 · IG스토리(s) · 카카오톡 22만명", "완료"], ["2026.11", "까르띠에 까르띠에 연말 캠페인", "M2Digital", "2026-11-15", "2026-11-21", 47000000, 32900000, 14, "앱 헤드라인 뉴스(3구좌) · 앱 스플래시 · 앱 푸시 발송 25만명 · 앱 메인 배너(3구좌) · 앱 오픈 팝업(3구좌) · 앱 하단 배너(3구좌)", "부킹"], ["2026.07", "피아제 폴로 캠페인", "M2Digital", "2026-07-26", "2026-08-15", 40500000, 28350000, 4, "앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스 · 카카오톡 메시지 발송 15만명", "세금계산서"], ["2026.08", "생로랑 8월 캠페인", "직거래", "2026-08-30", "2026-09-05", 30000000, 30000000, 7, "앱 스플래시 · 앱 푸시 발송 10만명 · 앱 오픈 팝업 · 앱 메인 배너 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 이벤트 메뉴", "집행"], ["2026.09", "부쉐론 9월 캠페인", "나스미디어", "2026-09-20", "2026-09-26", 22000000, 15400000, 5, "앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너", "부킹"], ["2026.12", "피아제 12월 캠페인", "M2Digital", "2026-12-06", "2026-12-26", 31200000, 21840000, 3, "앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스", "가부킹"], ["2026.12", "부쉐론 12월 캠페인", "직거래", "2026-12-06", "2026-12-12", 22000000, 22000000, 5, "앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스", "부킹"], ["2026.11", "부쉐론 11월 캠페인", "직거래", "2026-11-29", "2026-12-05", 22000000, 22000000, 5, "앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너", "가부킹"], ["2026.12", "보테가 베네타 EOY 캠페인", "나스미디어", "2026-12-13", "2026-12-19", 26000000, 18200000, 4, "앱 메인 배너 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 스플래시", "가부킹"], ["2026.10", "까르띠에 까르띠에 ITW 캠페인", "직거래", "2026-10-04", "2026-10-10", 48850000, 48850000, 14, "앱 스플래시 · 앱 푸시 발송 20만명 · 앱 메인 배너(3구좌) · 앱 오픈 팝업(3구좌) · 앱 하단 배너(3구좌) · 앱 헤드라인 뉴스(3구좌)", "부킹"]];
 const FIN_LIVE_FROM = '2026.01';   /* 포털에서 새로 등록된 부킹은 해당 월 실적에 합산 */
 const FIN_SETTLED_THRU = '2026.06';
@@ -2043,7 +2044,7 @@ function bookingsOn(dateStr){
   });
   return rows;
 }
-let calCur = new Date(2026,6,1), calSel = dstr(TODAY);
+let calCur = new Date(TODAY.getFullYear(),TODAY.getMonth(),1), calSel = dstr(TODAY);
 let acalCur = new Date(2026,6,1), acalSel = dstr(TODAY);
 function renderCal(mode){
   const isAdmin = mode==='admin';
@@ -2139,8 +2140,9 @@ function renderAdminTl(){
   const gcols=`grid-template-columns:repeat(${N},1fr)`;
   const px=ds=>{ const diff=(dParse(ds)-days[0])/86400000; return diff/N*100; };
   const head=days.map(d=>{ const we=d.getDay()===0||d.getDay()===6, isT=dstr(d)===dstr(TODAY);
-    return `<span class="${we?'we':''}">${isT?`<b class="tdy">${d.getDate()}</b>`:d.getDate()}<i>${'일월화수목금토'[d.getDay()]}</i></span>`; }).join('');
-  const list=CAMPAIGNS.filter(c=>stIdx(c)>=0).slice().sort((a,b)=>a.items[0].s<b.items[0].s?-1:1);
+    return `<span class="${we?'we':''}"><b class="dn ${isT?'tdy':''}">${d.getDate()}</b><i>${'일월화수목금토'[d.getDay()]}</i></span>`; }).join('');
+  const admin = me && me.role==='admin';
+  const list=CAMPAIGNS.filter(c=>stIdx(c)>=0 && (admin||c.adv===me.adv)).slice().sort((a,b)=>a.items[0].s<b.items[0].s?-1:1);
   const rows=list.map(c=>{
     const s0=c.items.reduce((a,i)=>a<i.s?a:i.s, c.items[0].s), e0=campEnd(c);
     const l=px(s0), r=px(e0)+100/N;
@@ -2151,19 +2153,29 @@ function renderAdminTl(){
       return i.p==='push' ? `<em class="tc push">${nm}${(i.qty||1)>1?'×'+i.qty:''}</em>` : `<em class="tc">${nm}${(i.qty||1)>1?'×'+i.qty:''}</em>`;
     }).join('');
     return `<div class="tl-row">
-      <div class="tl-lab"><div class="n">${esc(c.adv)} · ${esc(c.name)}</div><div class="m">${kdate(s0)} ~ ${kdate(e0)} · ${fmt(campTotal(c))}<span class="tl-st">${c.status}</span></div></div>
+      <div class="tl-lab"><div class="n">${esc(c.adv)} · ${esc(c.name)}</div><div class="m">${kdate(s0)} ~ ${kdate(e0)} · ${fmt(campTotal(c))}</div><div class="tl-stw"><span class="tl-st">${c.status}</span></div></div>
       <div class="tl-track"><div class="tl-grid" style="${gcols}">${days.map(d=>{const we=d.getDay()===0||d.getDay()===6;return `<i class="${we?'we':''}"></i>`;}).join('')}</div>
         <div class="tl-bar ${cls}" style="left:${Math.max(0,l)}%;width:${Math.min(100,r)-Math.max(0,l)}%" title="${esc(c.name)} · ${kdate(s0)}~${kdate(e0)}">${chips}</div>
       </div></div>`;
   }).join('');
-  $('adminTl').innerHTML=`<div class="tl-head"><div></div><div class="tl-days" style="${gcols}">${head}</div></div>${rows||'<p class="hint">이 달에 표시할 부킹이 없어요</p>'}`;
+  $('adminTl').innerHTML=`<div class="tl-head"><div></div><div class="tl-days" style="${gcols}">${head}</div></div>${rows||'<p class="hint" style="margin:16px 0 6px 14px">이 달에 표시할 부킹이 없어요</p>'}`;
+  /* 칩이 두 줄로 늘어나면 해당 행 높이를 키워 모든 구좌가 보이도록 */
+  $('adminTl').querySelectorAll('.tl-row').forEach(r=>{
+    const bar=r.querySelector('.tl-bar'), tr=r.querySelector('.tl-track');
+    if(!bar||!tr) return;
+    const need=bar.offsetHeight+16;
+    if(need>tr.offsetHeight) tr.style.height=need+'px';
+  });
 }
 RENDER.calendar = () => {
   const admin = me && me.role==='admin';
-  document.querySelector('#pg-calendar .cal-wrap').style.display = admin?'none':'';
-  if($('calTitle')) $('calTitle').textContent = admin?'전체 부킹 현황':'내 부킹 현황';
-  $('adminTlWrap').style.display = admin?'':'none';
-  if(admin){ renderAdminTl(); renderSlotDay(); } else renderCal(calMode());
+  /* 광고주도 관리자와 같은 타임라인 형태로 보되, 내 캠페인만 표시합니다 */
+  document.querySelector('#pg-calendar .cal-wrap').style.display = 'none';
+  if($('calTitle')) $('calTitle').textContent = admin?'전체 부킹 현황':'내 광고 스케줄';
+  $('adminTlWrap').style.display = '';
+  renderAdminTl();
+  $('slotDayWrap').style.display = admin?'':'none';
+  if(admin) renderSlotDay();
 };
 
 /* ═══════════ 광고 세팅 · 상태 ═══════════ */
@@ -2256,7 +2268,9 @@ function setSlot(id, skipSave){
   curSlot=id; const p=P[id];
   const lock = setupCamp!=='__new';
   const c = lock ? CAMPAIGNS.find(x=>x.id===setupCamp) : null;
-  if(c){ const it=c.items.find(i=>i.p===id); if(it&&it.creative) drafts[id]=it.creative; }   /* 등록된 소재 불러오기 */
+  /* 이 구좌에 저장된 소재만 불러온다 — 다른 캠페인/광고주의 입력값이 남지 않도록 */
+  if(c){ const it=c.items.find(i=>i.p===id); drafts[id] = (it&&it.creative) ? it.creative : blankDraft(); }
+  else { drafts[id] = (cart[id]&&cart[id].creative) ? cart[id].creative : (drafts[id]||blankDraft()); }
   const d=draftOf(id);
   if(c){ const it=c.items.find(i=>i.p===id); if(it){ d.ds=it.s; d.de=it.e; d.send=it.s; } }
   renderSlotTabs();
@@ -2328,7 +2342,9 @@ function buildCampSel(){
   onCampChange();
 }
 function onCampChange(){
+  const prev=setupCamp;
   setupCamp=$('setupCampSel').value;
+  if(prev!==setupCamp) drafts={};   /* 캠페인을 바꾸면 이전 캠페인의 입력값을 비운다 */
   const isNew=setupCamp==='__new';
   $('newCampName').style.display=isNew?'':'none';
   $('setupCampBadge').style.display=isNew?'none':'';
@@ -2964,13 +2980,14 @@ function finDynamic(){
   });
   return Object.values(map).sort((a,b)=>a.ym<b.ym?-1:1);
 }
-/* 대장 실적(FIN_BASE) + 포털에서 등록된 부킹(finDynamic)을 같은 월끼리 합산합니다. */
+/* 실적 대장(FIN_DETAIL) + 포털에서 등록된 부킹(finDynamic)을 같은 월끼리 합산합니다. */
 const finAll = () => {
   const map={};
-  FIN_BASE.forEach(r=>{
-    /* 미수금 — 대장의 광고 상태가 부킹·가부킹·집행인 건만 합산 */
-    const unpaid = FIN_DETAIL.filter(d=>d[0]===r[0]&&UNPAID_ST.includes(d[9])).reduce((a,d)=>a+d[6],0);
-    map[r[0]]={ym:r[0],cnt:r[1],sale:r[2],dep:r[3],unpaid,base:true};
+  /* 월 합계는 상세 내역에서 직접 집계합니다 — 상세를 수정하면 즉시 반영됩니다 */
+  FIN_DETAIL.forEach(d=>{
+    const m=map[d[0]]||(map[d[0]]={ym:d[0],cnt:0,sale:0,dep:0,unpaid:0,base:true});
+    m.cnt+=(+d[7]||0); m.sale+=(+d[5]||0); m.dep+=(+d[6]||0);
+    if(UNPAID_ST.includes(d[9])) m.unpaid+=(+d[6]||0);
   });
   finDynamic().forEach(d=>{
     const m=map[d.ym];
@@ -3127,13 +3144,16 @@ const renderSlotDay = () => {
   });
   $('slotDayTbl').innerHTML=h;
 };
+let finEdit=false;
 let finTab=String(TODAY.getFullYear());   /* 기본은 금년 */
 let finOpen={};   /* 정산 월별 상세 펼침 상태 */
 const UNPAID_ST = ['부킹','가부킹','집행'];          /* 대장 상태 기준 미수금 */
 const isLiveNow = (s,e) => !!s && !!e && s<=dstr(TODAY) && dstr(TODAY)<=e;
 function finDetailOf(ym){
-  const rows=FIN_DETAIL.filter(d=>d[0]===ym).map(d=>({adv:d[1],agency:d[2],s:d[3],e:d[4],sale:d[5],dep:d[6],cnt:d[7],prods:d[8],
-    st:d[9]||'', live:isLiveNow(d[3],d[4]), unpaid: UNPAID_ST.includes(d[9])?d[6]:0, tent: d[9]==='가부킹'}));
+  const rows=[];
+  FIN_DETAIL.forEach((d,idx)=>{ if(d[0]!==ym) return;
+    rows.push({idx,adv:d[1],agency:d[2],s:d[3],e:d[4],sale:+d[5]||0,dep:+d[6]||0,cnt:+d[7]||0,prods:d[8],
+      st:d[9]||'', live:isLiveNow(d[3],d[4]), unpaid: UNPAID_ST.includes(d[9])?(+d[6]||0):0, tent: d[9]==='가부킹'}); });
   /* 포털에서 등록된 부킹도 같은 월 상세에 함께 표시 */
   CAMPAIGNS.forEach(c=>{
     if(stIdx(c)<0) return;
@@ -3144,7 +3164,7 @@ function finDetailOf(ym){
       s:its.reduce((a,i)=>a<i.s?a:i.s, its[0].s),
       e:its.reduce((a,i)=>a>i.e?a:i.e, its[0].e),
       sale, dep:Math.round(sale*(c.agency?0.7:1)),
-      cnt:its.reduce((a,i)=>a+(i.qty||1),0),
+      idx:-1, cnt:its.reduce((a,i)=>a+(i.qty||1),0),
       prods:its.map(i=>P[i.p].name).join(' · '), live:true,
       unpaid: stIdx(c)<8 ? Math.round(sale*(c.agency?0.7:1)) : 0,
       tent: c.status==='부킹 요청'});
@@ -3175,13 +3195,25 @@ function renderFin(){
     body+=yr.map(r=>{
       const open=finOpen[r.ym];
       const det=finDetailOf(r.ym);
-      const detRows=det.length
-        ? `<table class="fin-det"><thead><tr><th>광고주</th><th>판매사</th><th>기간</th><th class="num">구좌</th><th class="num">매출</th><th class="num">입금가</th><th class="num">미수금</th></tr></thead><tbody>
-            ${det.map(d=>`<tr><td><b>${esc(d.adv)}</b>${d.tent?' <span class="fd-tent">가부킹</span>':''}${d.live?' <span class="pill b" style="font-size:9px;padding:1px 6px">LIVE</span>':''}<span class="fd-p">${esc(d.prods)}</span></td>
+      const detRow = d => finEdit && d.idx>=0
+        ? `<tr class="fe-row"><td><input class="fe" data-fe="${d.idx}:1" value="${esc(d.adv)}" placeholder="광고주">
+             <input class="fe fe-sm" data-fe="${d.idx}:8" value="${esc(d.prods)}" placeholder="상품"></td>
+           <td><input class="fe" data-fe="${d.idx}:2" value="${esc(d.agency)}" placeholder="판매사"></td>
+           <td><input class="fe fe-dt" type="date" data-fe="${d.idx}:3" value="${d.s||''}"><input class="fe fe-dt" type="date" data-fe="${d.idx}:4" value="${d.e||''}"></td>
+           <td class="num"><input class="fe fe-n" type="number" data-fe="${d.idx}:7" value="${d.cnt}"></td>
+           <td class="num"><input class="fe fe-n" type="number" step="1000" data-fe="${d.idx}:5" value="${d.sale}"></td>
+           <td class="num"><input class="fe fe-n" type="number" step="1000" data-fe="${d.idx}:6" value="${d.dep}"></td>
+           <td class="num"><select class="fe fe-st" data-fe="${d.idx}:9">${['완료','세금계산서','집행','부킹','가부킹'].map(s=>`<option ${s===d.st?'selected':''}>${s}</option>`).join('')}</select>
+             <button class="fe-del" type="button" data-fdel="${d.idx}" title="행 삭제">✕</button></td></tr>`
+        : `<tr><td><b>${esc(d.adv)}</b>${d.tent?' <span class="fd-tent">가부킹</span>':''}${d.live?' <span class="pill b" style="font-size:9px;padding:1px 6px">LIVE</span>':''}<span class="fd-p">${esc(d.prods)}</span></td>
               <td>${esc(d.agency)}</td><td class="fd-d">${d.s?kdate(d.s):'—'} ~ ${d.e?kdate(d.e):'—'}</td>
               <td class="num">${d.cnt}</td><td class="num">${fmtN(d.sale)}</td><td class="num">${fmtN(d.dep)}</td>
-              <td class="num">${d.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(d.unpaid)}</span>`:'—'}</td></tr>`).join('')}
-          </tbody></table>`
+              <td class="num">${d.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(d.unpaid)}</span>`:'—'}</td></tr>`;
+      const addBtn = finEdit ? `<button class="fe-add" type="button" data-fadd="${r.ym}">＋ ${r.ym} 행 추가</button>` : '';
+      const detRows=(det.length||finEdit)
+        ? `<table class="fin-det"><thead><tr><th>광고주</th><th>판매사</th><th>기간</th><th class="num">구좌</th><th class="num">매출</th><th class="num">입금가</th><th class="num">${finEdit?'상태':'미수금'}</th></tr></thead><tbody>
+            ${det.map(detRow).join('')}
+          </tbody></table>${addBtn}`
         : `<p class="hint" style="margin:8px 0">상세 내역이 없습니다.</p>`;
       return `<tr class="fin-r"><td><button class="fin-more" data-fm="${r.ym}" type="button"><span class="fm-ar ${open?'on':''}">›</span>${r.ym}</button>${finDetailOf(r.ym).some(d=>d.live)?' <span class="pill b" style="font-size:9.5px;padding:2px 7px">LIVE</span>':''}</td><td class="num">${r.cnt}</td><td class="num">${fmtN(r.sale)}</td><td class="num">${fmtN(r.dep)}</td><td class="num">${r.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(r.unpaid)}</span>`:'—'}</td></tr>
         ${open?`<tr class="fin-det-row"><td colspan="5">${detRows}</td></tr>`:''}`;
@@ -3193,6 +3225,23 @@ function renderFin(){
   $('finTbl').querySelectorAll('[data-fm]').forEach(b=>b.addEventListener('click',()=>{
     const ym=b.dataset.fm; finOpen[ym]=!finOpen[ym]; renderFin();
   }));
+  /* ─── 실적 대장 직접 수정 ─── */
+  $('finTbl').querySelectorAll('[data-fe]').forEach(el=>el.addEventListener('change',()=>{
+    const [i,f]=el.dataset.fe.split(':').map(Number);
+    const row=FIN_DETAIL[i]; if(!row) return;
+    row[f] = [5,6,7].includes(f) ? (+el.value||0) : el.value;
+    renderFin(); toast('실적 대장을 수정했어요 — 월 합계·미수금에 바로 반영됩니다');
+  }));
+  $('finTbl').querySelectorAll('[data-fdel]').forEach(b=>b.addEventListener('click',()=>{
+    FIN_DETAIL.splice(+b.dataset.fdel,1); renderFin(); toast('해당 행을 삭제했어요');
+  }));
+  $('finTbl').querySelectorAll('[data-fadd]').forEach(b=>b.addEventListener('click',()=>{
+    const ym=b.dataset.fadd, s=ym.replace('.','-')+'-01';
+    FIN_DETAIL.push([ym,'새 광고주','직거래',s,s,0,0,1,'앱 메인 배너','부킹']);
+    finOpen[ym]=true; renderFin();
+  }));
+  $('finEditBtn').textContent = finEdit ? '✓ 수정 완료' : '✏ 내용 수정';
+  $('finEditBtn').style.cssText = finEdit ? 'background:var(--hd-green);color:#fff;border-color:var(--hd-green)' : '';
 }
 
 function bindInv(){
@@ -3211,6 +3260,12 @@ $('invTbl').querySelectorAll('[data-price]').forEach(i=>i.addEventListener('chan
   }));
 }
 RENDER.fin = () => { renderFin(); renderInv(); };
+$('finEditBtn').addEventListener('click',()=>{
+  finEdit=!finEdit;
+  if(finEdit){ finAll().forEach(r=>{ if(finTab==='전체'||r.ym.startsWith(finTab)) finOpen[r.ym]=true; }); }
+  renderFin();
+  toast(finEdit?'수정 모드예요 — 상세 내역을 직접 고치면 월 합계가 즉시 반영됩니다':'수정을 마쳤어요');
+});
 $('finCsv').addEventListener('click',()=>{
   const lines=[['월','건수','총광고비','입금가','미수금'].join(',')]
     .concat(finAll().map(r=>[r.ym,r.cnt,r.sale,r.dep,r.unpaid].join(',')));
@@ -3808,6 +3863,11 @@ $('loginBtn').addEventListener('click',()=>{
   const a = ACCOUNTS.find(x=>x.id===$('loginId').value.trim() && x.pw===$('loginPw').value);
   if(!a){ $('loginErr').style.display='block'; return; }
   $('loginErr').style.display='none'; me=a;
+  /* 계정이 바뀌면 이전 로그인에서 남은 입력값·부킹함을 모두 비운다 */
+  drafts={}; cart={}; curSlot='main'; setupCamp='__new'; setupPreselect=null;
+  pvIdx.main=0; pvIdx.popup=0; pvIdx.bottom=0;
+  tlCur=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
+  calCur=new Date(TODAY.getFullYear(),TODAY.getMonth(),1); calSel=dstr(TODAY);
   $('loginView').style.display='none'; $('appShell').classList.add('on');
   document.body.classList.toggle('admin', a.role==='admin');
   const nm = a.role==='admin' ? (a.name||'미디어콘텐츠팀') : a.adv;
@@ -3822,9 +3882,9 @@ $('loginBtn').addEventListener('click',()=>{
   buildNav(); go(a.role==='admin' ? 'board' : 'products');
 });
 [$('loginId'),$('loginPw')].forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter') $('loginBtn').click(); }));
-$('logoutBtn').addEventListener('click',()=>{ me=null; document.body.classList.remove('admin'); $('appShell').classList.remove('on'); $('loginView').style.display='flex'; $('loginPw').value=''; });
+$('logoutBtn').addEventListener('click',()=>{ me=null; drafts={}; cart={}; document.body.classList.remove('admin'); $('appShell').classList.remove('on'); $('loginView').style.display='flex'; $('loginPw').value=''; });
 const NAVS = {
-  adv:[['products','광고 상품'],['board','부킹/광고 상태'],['material','소재 등록'],['calendar','내 부킹 현황']],
+  adv:[['products','광고 상품'],['board','부킹/광고 상태'],['material','소재 등록'],['calendar','내 광고 스케줄']],
   admin:[['board','부킹 게시판'],['calendar','부킹 현황'],['fin','정산'],['accounts','광고주 계정']]
 };
 function buildNav(){
@@ -3844,7 +3904,7 @@ function go(pg){
   $('pg-'+pg).classList.add('on');
   document.querySelectorAll('#navTabs .view-tab').forEach(b=>b.classList.toggle('active', b.dataset.pg===pg));
   if(RENDER[pg]) RENDER[pg]();
-  const onSetup = pg==='setup' && me && me.role!=='admin';
+  const onSetup = pg==='setup' && me && me.role==='admin';   /* 책갈피는 관리자 전용 */
   $('calHandle').classList.toggle('show', onSetup && !$('calDrawer').classList.contains('open'));
   if(!onSetup) $('calDrawer').classList.remove('open');
   window.scrollTo({top:0});
@@ -3927,7 +3987,7 @@ $('calHandle').addEventListener('click',()=>{
 });
 $('drawerX').addEventListener('click',()=>{
   $('calDrawer').classList.remove('open');
-  if($('pg-setup').classList.contains('on')) $('calHandle').classList.add('show');
+  if($('pg-setup').classList.contains('on') && me && me.role==='admin') $('calHandle').classList.add('show');
 });
 /* 크기 조절 (좌측 그립 드래그) */
 (()=>{ let dragging=false;
