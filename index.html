@@ -870,7 +870,10 @@ textarea.text-input{resize:none;line-height:1.5}
 .slot-main{margin:0 13px 8px;position:relative}
 .main-ad-card{width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;position:relative;background:#E8EAE6}
 .main-ad-card img.mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.main-ad-title{position:absolute;top:17px;left:17px;right:17px;color:#fff;font-weight:700;font-size:19.5px;line-height:1.52;letter-spacing:-.3px;white-space:pre-line;z-index:3;min-height:59.3px;display:flex;flex-direction:column;justify-content:center}
+.main-ad-title{position:absolute;top:17px;left:17px;right:17px;color:#fff;font-weight:700;font-size:19.5px;line-height:1.52;letter-spacing:-.3px;white-space:pre-line;z-index:3}
+.main-ad-title .mt-in{display:block}
+/* 1줄일 때 실제 앱처럼 2줄 영역 기준 가운데 — 줄간격(29.64px)의 절반만큼 내린다 */
+.main-ad-title.one .mt-in{padding-top:14.8px}
 .main-ad-dim{position:absolute;left:0;right:0;top:0;height:100%;background:linear-gradient(180deg,rgba(0,0,0,.59) 0%,rgba(0,0,0,0) 60.5%);z-index:2;pointer-events:none}
 .card-pager{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.45);color:#fff;font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:11px;z-index:5}
 .pv-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:52px;color:#fff;font-size:26px;font-weight:600;z-index:6;display:flex;align-items:center;justify-content:center;text-shadow:0 1px 8px rgba(0,0,0,.45);line-height:1}
@@ -2710,7 +2713,9 @@ function renderMainZone(){
   $('mainAdImg').style.display=cur.empty?'none':'';
   $('mainAdDim').style.display=cur.empty?'none':'';
   if(!cur.empty) $('mainAdImg').src=cur.src;
-  $('mainAdTitle').innerHTML = `${esc(cur.t1||'')}${cur.t2?'<br>'+esc(cur.t2):''}`;
+  /* 1줄일 때도 실제 앱처럼 2줄 영역 기준 세로 가운데로 놓이도록 한 겹 감싼다 */
+  $('mainAdTitle').innerHTML = `<span class="mt-in">${esc(cur.t1||'')}${cur.t2?'<br>'+esc(cur.t2):''}</span>`;
+  $('mainAdTitle').classList.toggle('one', !cur.t2);
   $('mainPager').textContent=`${i+1} / ${s.length}`;
   $('mainDots').innerHTML=s.map((_,x)=>`<i class="${x===i?'on':''}"></i>`).join('');
 }
