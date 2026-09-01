@@ -2040,6 +2040,37 @@ document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('mousedown',e=>{ if(e.target===m) m.classList.remove('show'); }));
 const RENDER = {};
 /* ═══════════ 캘린더 (공용) ═══════════ */
+/* ─── 구좌 잔여 검사 — 해당 기간에 남은 구좌가 없으면 부킹을 막습니다 ─── */
+function usedOnFor(pid, ds, excludeCamp){
+  return bookingsOn(ds).filter(r=>r.it.p===pid && (!excludeCamp||r.c.id!==excludeCamp))
+    .reduce((a,r)=>a+(r.it.qty||1),0);
+}
+function rangeFullDay(pid, s, e, qty, excludeCamp){
+  const cap=dayCap(P[pid]);
+  for(let d=dParse(s); dstr(d)<=e; d.setDate(d.getDate()+1)){
+    if(usedOnFor(pid,dstr(d),excludeCamp)+qty>cap) return dstr(d);
+  }
+  return null;
+}
+function earliestFreeStart(pid, s, e, qty, excludeCamp){
+  const span=Math.round((dParse(e)-dParse(s))/86400000);
+  const cur=dParse(s);
+  for(let i=0;i<400;i++){
+    const cs=dstr(cur), ce=dstr(new Date(cur.getTime()+span*86400000));
+    if(!rangeFullDay(pid,cs,ce,qty,excludeCamp)) return cs;
+    cur.setDate(cur.getDate()+1);
+  }
+  return null;
+}
+/* 마감이면 안내 후 true 반환 */
+function blockIfFull(pid, s, e, qty, excludeCamp){
+  if(!P[pid] || P[pid].unit!=='week') return false;
+  const hit=rangeFullDay(pid,s,e,qty||1,excludeCamp);
+  if(!hit) return false;
+  const nx=earliestFreeStart(pid,s,e,qty||1,excludeCamp);
+  toast(`${P[pid].name}는 해당 기간에 부킹이 마감되었습니다 (${kdate(hit)} 마감)${nx?` — 가장 빠른 가능 날짜: ${kdate(nx)}`:''}`);
+  return true;
+}
 function bookingsOn(dateStr){
   const rows=[];
   CAMPAIGNS.forEach(c=>{ if(c.status==='취소') return;
@@ -2508,6 +2539,7 @@ $('saveSlotBtn').addEventListener('click', async ()=>{
     }
     /* 지금 폼에 있는 값을 그대로 스냅샷으로 커밋합니다 (이후 입력은 다시 저장해야 반영) */
     const snap = {...d, imgs:(d.imgs||[]).slice()};
+    markDirty(c.id);
     c.items.filter(i=>i.p===curSlot).forEach(i=>{ i.mat=true; i.creative=snap; });
     const allMat=c.items.every(i=>i.mat||i.p==='event');
     if(allMat&&stIdx(c)>=1&&stIdx(c)<=3){ c.status='소재 등록'; }
@@ -2519,6 +2551,7 @@ $('saveSlotBtn').addEventListener('click', async ()=>{
   }else{
     const pr=slotPrice(curSlot);
     const isSend=P[curSlot].unit==='send';
+    if(!isSend && blockIfFull(curSlot, d.ds, d.de, cart[curSlot]?(cart[curSlot].qty||1):1)) return;
     cart[curSlot]={p:curSlot, qty:1,
       s:isSend?d.send:d.ds, e:isSend?d.send:d.de, sale:pr.v,
       vol: curSlot==='push'?{pv2:20000,pv10:100000,pv20:200000}[d.pushVol]
@@ -2677,6 +2710,10 @@ function renderCart(){
   const cta=$('cartCta');
   if(cta) cta.addEventListener('click', async ()=>{
     const c2=cartCalc(); if(!c2.sel.length) return;
+    /* 최종 확인 — 요청 직전에 마감된 구좌가 있으면 막습니다 */
+    for(const r of c2.sel){
+      if(P[r.k].unit==='week' && blockIfFull(r.k, r.it.s, r.it.e, r.it.qty||1)) return;
+    }
     const name=$('cartName').value.trim();
     if(!name){ toast('캠페인 이름을 입력해 주세요 — 브랜드명+광고월+제품명 형식을 권장해요'); $('cartName').focus(); return; }
     const f=c2.listSum? (c2.listSum-c2.disc)/c2.listSum : 1;   /* 패키지 할인 안분 */
@@ -4353,6 +4390,8 @@ async function uploadDraftImages(d, pathPrefix){
   }
 }
 let _fbLastSynced='';
+const dirtyCamps=new Set();                 /* 아직 서버에 반영되지 않은 로컬 변경 캠페인 */
+function markDirty(id){ if(id) dirtyCamps.add(id); }
 function fbScheduleSync(){
   if(!window.FB||!me) return;
   clearTimeout(window.__fbTimer);
@@ -4360,8 +4399,8 @@ function fbScheduleSync(){
     const snapshot=JSON.stringify({CAMPAIGNS,ACCOUNTS});
     if(snapshot===_fbLastSynced) return;
     _fbLastSynced=snapshot;
-    try{ await window.FB.pushState({CAMPAIGNS,ACCOUNTS}); }
-    catch(e){ console.warn('cloud sync failed', e); }
+    try{ await window.FB.pushState({CAMPAIGNS,ACCOUNTS}); dirtyCamps.clear(); }
+    catch(e){ _fbLastSynced=''; console.warn('cloud sync failed', e); }
   },500);
 }
 ['board','material','calendar','accounts','fin','products','setup'].forEach(k=>{
@@ -4369,21 +4408,12 @@ function fbScheduleSync(){
   if(!orig) return;
   RENDER[k]=function(...args){ const r=orig.apply(this,args); fbScheduleSync(); return r; };
 });
-/* 원격 스냅샷을 받을 때, 아직 서버에 올라가지 않은 로컬 소재 등록 결과를 지키기 위해 병합합니다. */
+/* 원격 스냅샷 병합 — 아직 서버에 올리지 못한 '로컬에서 방금 수정한' 캠페인만 지키고,
+   나머지는 원격 값을 그대로 받아들입니다. (그래야 다른 계정의 변경이 정상 반영됩니다) */
 function mergeRemoteCampaigns(remoteList){
   const local={}; CAMPAIGNS.forEach(c=>local[c.id]=c);
-  const merged=remoteList.map(rc=>{
-    const lc=local[rc.id];
-    if(!lc||!lc.items||!rc.items) return rc;
-    rc.items.forEach(ri=>{
-      const li=lc.items.find(x=>x.p===ri.p);
-      if(li&&li.mat&&!ri.mat){ ri.mat=true; ri.creative=li.creative; }   /* 로컬에서 방금 등록한 소재 유지 */
-    });
-    if(lc.docs) rc.docs={...(rc.docs||{}), ...lc.docs};
-    return rc;
-  });
-  /* 아직 동기화되지 않은 로컬 전용 캠페인은 그대로 둡니다 */
   const ids=new Set(remoteList.map(r=>r.id));
+  const merged=remoteList.map(rc=> (dirtyCamps.has(rc.id)&&local[rc.id]) ? local[rc.id] : rc);
   return merged.concat(CAMPAIGNS.filter(c=>!ids.has(c.id)));
 }
 function fbStartSync(){
@@ -4396,7 +4426,6 @@ function fbStartSync(){
     if(remote.CAMPAIGNS) CAMPAIGNS=mergeRemoteCampaigns(remote.CAMPAIGNS);
     if(remote.ACCOUNTS) ACCOUNTS=remote.ACCOUNTS;
     if(me&&curPg&&RENDER[curPg]) RENDER[curPg]();
-    if(me) toast('☁️ 다른 화면에서의 변경사항이 동기화됐어요');
   });
 }
 if(window.FB) fbStartSync(); else window.addEventListener('fb-ready', fbStartSync, {once:true});
