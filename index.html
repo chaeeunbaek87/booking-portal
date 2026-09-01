@@ -3686,7 +3686,8 @@ RENDER.board = () => {
   $('reqList').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.del); if(!c) return;
     if(!window.confirm(`「${c.name}」 부킹을 정말 삭제하시겠습니까?\n삭제하면 되돌릴 수 없습니다.`)) return;
-    CAMPAIGNS.splice(CAMPAIGNS.indexOf(c),1);
+    markDeleted(c.id);
+    CAMPAIGNS=CAMPAIGNS.filter(x=>x.id!==c.id);
     toast('부킹이 삭제됐어요');
     RENDER.board();
   }));
@@ -4391,7 +4392,9 @@ async function uploadDraftImages(d, pathPrefix){
 }
 let _fbLastSynced='';
 const dirtyCamps=new Set();                 /* 아직 서버에 반영되지 않은 로컬 변경 캠페인 */
+const deletedCamps=new Set();               /* 이번 세션에서 삭제한 부킹 — 스냅샷으로 되살아나지 않게 */
 function markDirty(id){ if(id) dirtyCamps.add(id); }
+function markDeleted(id){ if(id){ deletedCamps.add(id); dirtyCamps.delete(id); } }
 function fbScheduleSync(){
   if(!window.FB||!me) return;
   clearTimeout(window.__fbTimer);
@@ -4412,9 +4415,10 @@ function fbScheduleSync(){
    나머지는 원격 값을 그대로 받아들입니다. (그래야 다른 계정의 변경이 정상 반영됩니다) */
 function mergeRemoteCampaigns(remoteList){
   const local={}; CAMPAIGNS.forEach(c=>local[c.id]=c);
-  const ids=new Set(remoteList.map(r=>r.id));
-  const merged=remoteList.map(rc=> (dirtyCamps.has(rc.id)&&local[rc.id]) ? local[rc.id] : rc);
-  return merged.concat(CAMPAIGNS.filter(c=>!ids.has(c.id)));
+  const list=remoteList.filter(r=>!deletedCamps.has(r.id));   /* 삭제한 부킹은 되살리지 않음 */
+  const ids=new Set(list.map(r=>r.id));
+  const merged=list.map(rc=> (dirtyCamps.has(rc.id)&&local[rc.id]) ? local[rc.id] : rc);
+  return merged.concat(CAMPAIGNS.filter(c=>!ids.has(c.id)&&!deletedCamps.has(c.id)));
 }
 function fbStartSync(){
   if(!window.FB) return;
