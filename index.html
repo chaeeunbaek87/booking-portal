@@ -525,6 +525,11 @@ textarea.text-input{resize:none;line-height:1.5}
 .cal-wrap.toss .cal-cell{border:none;border-radius:12px;background:#FAFBFC;min-height:92px;padding:8px 8px;transition:background .12s,box-shadow .12s}
 .cal-wrap.toss .cal-cell:hover{background:#F2F4F6}
 .cal-wrap.toss .cal-cell.dim{background:#fff;opacity:.38}
+.dp-tbl.dp-mine td{vertical-align:top;padding:9px 6px}
+.dp-tbl.dp-mine .pn b{display:block;font-size:12.5px;color:var(--ink-1)}
+.dp-tbl.dp-mine .dp-st{display:inline-block;margin-top:3px;font-size:10px;font-weight:700;color:var(--hd-deep);background:var(--hd-soft);padding:2px 7px;border-radius:6px}
+.dp-tbl.dp-mine .dp-per{font-size:11px;color:var(--ink-3);white-space:nowrap;line-height:1.5}
+.dp-tbl.dp-mine .evchip{margin:0 4px 4px 0}
 .cal-wrap.toss .cal-cell.sel{background:#fff;box-shadow:inset 0 0 0 2px #3182F6}
 .cal-wrap.toss .cal-cell .d{font-size:12px;font-weight:700;color:#333D4B}
 .cal-wrap.toss .cal-cell.today .d{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;background:#3182F6;color:#fff}
@@ -840,6 +845,7 @@ textarea.text-input{resize:none;line-height:1.5}
 .greet-roll{overflow:hidden;height:30px}
 .greet-track{display:flex;width:200%;transition:transform .45s cubic-bezier(.4,0,.2,1)}
 .greet-slide{width:50%;flex-shrink:0;height:30px;padding-right:70px}
+.greet-slide.one{display:flex;flex-direction:column;justify-content:center}
 .greet-ticket{position:absolute;right:12px;top:-13px;height:56px;pointer-events:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.18));will-change:transform,opacity;object-fit:contain}
 .greet-banner .g1{font-size:10.5px;line-height:1.25;font-weight:600;opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .greet-banner .g2{font-size:10.5px;line-height:1.25;font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -975,24 +981,24 @@ textarea.text-input{resize:none;line-height:1.5}
 .mn-top{display:flex;justify-content:flex-end;align-items:center;gap:17px;padding:12px 16px 23px;color:#111}
 .mn-bell{width:17px;height:19px;object-fit:contain;display:block}
 .mn-hic{width:18px;height:18px;display:block}
-.mn-greet{margin:0 16px;background:#EDEDFB;border-radius:14px;padding:15px 14px;display:flex;align-items:center;position:relative;overflow:hidden;min-height:103px;box-sizing:border-box}
+.mn-greet{margin:0 13px;background:#EDEDFB;border-radius:14px;padding:15px 14px;display:flex;align-items:center;position:relative;overflow:hidden;min-height:92px;box-sizing:border-box}
 .mn-gtxt{position:relative;z-index:2}
-.mn-gname{font-size:16px;font-weight:800;display:flex;align-items:center;gap:3px;margin-bottom:7px}
+.mn-gname{font-size:14.3px;font-weight:800;display:flex;align-items:center;gap:3px;margin-bottom:10px}
 .mn-gname svg{width:12px;height:12px}
-.mn-gsub{font-size:11px;font-weight:600;line-height:1.45;color:#1B1B1B}
-.mn-jelly{position:absolute;right:6px;bottom:14px;width:112px;object-fit:contain;z-index:1}
-.mn-search{margin:22px 16px 0;background:#F2F3F5;border-radius:13px;height:29px;display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+.mn-gsub{font-size:10.5px;font-weight:600;line-height:1.6;color:#1B1B1B}
+.mn-jelly{position:absolute;right:9px;bottom:11px;width:99px;object-fit:contain;z-index:1}
+.mn-search{margin:18px 13px 0;background:#F2F3F5;border-radius:13px;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 12px}
 .mn-search span{font-size:10.5px;color:#9A9DA2;font-weight:500}
 .mn-search svg{width:13px;height:13px;flex-shrink:0}
-.mn-evt{margin:18px 16px 0;height:40px;display:flex;align-items:center}
-.mn-evt span{font-size:15px;font-weight:800;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mn-chips{display:flex;gap:6px;padding:8px 16px 0;overflow-x:auto;scrollbar-width:none}
+.mn-evt{margin:13px 20px 0;height:30px;display:flex;align-items:center}
+.mn-evt span{font-size:11.8px;font-weight:800;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mn-chips{display:flex;gap:6px;padding:24px 16px 0;overflow-x:auto;scrollbar-width:none}
 .mn-chips::-webkit-scrollbar{display:none}
-.mn-chip{flex-shrink:0;font-style:normal;font-size:10.5px;font-weight:700;padding:6px 13px;border-radius:15px;white-space:nowrap;background:#fff;border:1px solid #EDEDED;color:#4A4A4A;cursor:pointer;transition:background .15s,color .15s}
+.mn-chip{flex-shrink:0;font-style:normal;font-size:10.5px;font-weight:700;padding:7px 13px;border-radius:15px;white-space:nowrap;background:#fff;border:1px solid #EDEDED;color:#4A4A4A;cursor:pointer;transition:background .15s,color .15s}
 .mn-chip.on{background:#00A651;border-color:#00A651;color:#fff}
-.mn-sec{font-size:9.5px;font-weight:600;color:#B7B7B7;padding:24px 16px 9px;border-bottom:1px solid #F1F1F1}
-.mn-li{font-size:14px;font-weight:700;color:#141414;padding:12px 16px;line-height:1.15}
-.mn-acc{font-size:14px;font-weight:800;color:#141414;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #F1F1F1}
+.mn-sec{font-size:10.4px;font-weight:600;color:#B7B7B7;padding:28px 20px 14px;border-bottom:1px solid #F1F1F1}
+.mn-li{font-size:12px;font-weight:700;color:#141414;padding:10.6px 20px;line-height:1.15}
+.mn-acc{font-size:12px;font-weight:800;color:#141414;padding:11.5px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #F1F1F1}
 .mn-chv{width:13px;height:13px;color:#7A7A7A}
 .menu-screen.show{display:flex}
 .menu-body{flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 20px}
@@ -1463,8 +1469,8 @@ init();
         <p class="hint">이미지 좌상단 텍스트 영역에 노출됩니다. 공백 포함 <b>한 줄당 15자</b>까지 입력할 수 있습니다.</p>
       </div>
       <div id="grpHeadline" style="display:none">
-        <div class="field"><label>문구 1줄 <span class="req">*</span></label><div class="input-wrap"><input type="text" class="text-input cnt" id="hlT1" maxlength="15" style="padding-right:52px"><span class="char-count">0/15</span></div></div>
-        <div class="field"><label>문구 2줄 <span class="req">*</span></label><div class="input-wrap"><input type="text" class="text-input cnt" id="hlT2" maxlength="15" style="padding-right:52px"><span class="char-count">0/15</span></div></div>
+        <div class="field"><label>문구 1줄 <span class="req">*</span></label><div class="input-wrap"><input type="text" class="text-input cnt" id="hlT1" maxlength="17" style="padding-right:52px"><span class="char-count">0/17</span></div></div>
+        <div class="field"><label>문구 2줄 <small style="font-weight:600;color:var(--ink-3)">(선택)</small></label><div class="input-wrap"><input type="text" class="text-input cnt" id="hlT2" maxlength="17" style="padding-right:52px"><span class="char-count">0/17</span></div></div>
         <p class="hint">그리팅 메시지 등과 <b>3초 단위로 자동 롤링</b>되는 대화형 구좌입니다. 우측 오브젝트 이미지는 아래 소재 등록에서 올려 주세요.</p>
       </div>
       <div id="grpEvent" style="display:none">
@@ -1476,8 +1482,8 @@ init();
           <div class="seg"><input type="radio" name="pushVol" id="pv2" value="20000" checked><label for="pv2">2만 명 · 100만원</label><input type="radio" name="pushVol" id="pv10" value="100000"><label for="pv10">10만 명 · 500만원</label><input type="radio" name="pushVol" id="pv20" value="200000"><label for="pv20">20만 명 · 1,000만원</label></div>
         </div>
         <div class="field"><label>푸시 제목 <span class="req">*</span></label><div class="input-wrap"><input type="text" class="text-input cnt" id="pushT" maxlength="15" style="padding-right:52px"><span class="char-count">0/15</span></div></div>
-        <div class="field"><label>푸시 내용 <span class="req">*</span></label><div class="input-wrap"><textarea class="text-input cnt" id="pushB" rows="2" maxlength="25" style="padding-right:56px"></textarea><span class="char-count" style="top:auto;bottom:10px;transform:none">0/25</span></div></div>
-        <p class="hint">제목 <b>15자</b> / 내용 <b>25자</b> 이내 · 이모지 사용 불가 · 푸시 동의 회원(75만) 중 발송되며 7일 내 열람률 10% 이상입니다.</p>
+        <div class="field"><label>푸시 내용 <span class="req">*</span></label><div class="input-wrap"><textarea class="text-input cnt" id="pushB" rows="2" maxlength="30" style="padding-right:56px"></textarea><span class="char-count" style="top:auto;bottom:10px;transform:none">0/30</span></div></div>
+        <p class="hint">제목 <b>15자</b> / 내용 <b>30자</b> 이내 (알림에는 25자까지 노출 · 이후 말줄임) · 이모지 사용 불가 · 푸시 동의 회원(75만) 중 발송되며 7일 내 열람률 10% 이상입니다.</p>
       </div>
       <div id="grpSplash" style="display:none">
         <div class="field"><label>노출형 <span class="req">*</span></label>
@@ -1731,7 +1737,7 @@ init();
     <div class="day-panel" id="dayPanel"></div>
   </div>
   <div class="board-wrap show" id="adminTlWrap" style="max-width:1780px;display:none">
-    <h3 style="margin:0 0 8px;font-size:15.5px">전체 부킹 현황</h3>
+    <h3 style="margin:0 0 8px;font-size:15.5px" id="calTitle">내 부킹 현황</h3>
     <div style="display:flex;align-items:center;gap:10px;margin:0 0 10px">
       <button type="button" id="tlPrev" style="width:32px;height:32px;border-radius:10px;border:none;background:#F2F4F6;color:#4E5968;font-size:15px;font-weight:700;cursor:pointer">‹</button>
       <b id="tlYm" style="font-size:15px;letter-spacing:-.3px"></b>
@@ -1752,7 +1758,7 @@ init();
 <div class="page" id="pg-fin">
 <div class="board-wrap show" style="padding:0;max-width:1000px">
   <div class="card" style="margin-bottom:16px">
-    <div class="card-head"><h2>월별 정산</h2><span class="opt">2025.05 이전 실적 + 2026.07~ 실시간 부킹 집계 · VAT 별도</span>
+    <div class="card-head"><h2>월별 정산</h2><span class="opt">판매실적대장(2026) + 포털 신규 부킹 실시간 집계 · VAT 별도</span>
       <span style="margin-left:auto"><button class="dl-btn" id="finCsv" type="button">CSV 다운로드</button></span></div>
     <div class="board-tools" style="margin-bottom:10px"><span id="finTabs" style="display:flex;gap:8px"></span></div>
     <table class="tbl" id="finTbl"></table>
@@ -1803,8 +1809,13 @@ init();
 <div class="page" id="pg-cart">
   <div class="board-wrap show" style="max-width:620px">
     <div class="card" style="padding:24px 24px 28px">
-      <h3 style="margin:0 0 4px;font-size:19px">🛒 부킹함</h3>
-      <p class="hint" style="margin:0 0 10px">체크박스로 이번에 부킹할 구좌를 고르세요</p>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1">
+          <h3 style="margin:0 0 4px;font-size:19px">🛒 부킹함</h3>
+          <p class="hint" style="margin:0 0 10px">체크박스로 이번에 부킹할 구좌를 고르세요</p>
+        </div>
+        <button class="act-btn danger" id="cartDelSel" type="button" style="flex-shrink:0">선택 구좌 삭제</button>
+      </div>
       <div id="cartBody"></div>
     </div>
   </div>
@@ -1986,20 +1997,22 @@ CAMPAIGNS.forEach((c,i)=>c.reqAt=i+1);
 /* 판매 실적 — 「RMN_판매실적대장_20260825.xlsx」 기준 (2026-08-25 업데이트)
    건수·매출은 대장 원본 그대로이며, 입금가는 판매사 기준(직거래 100% · 대행사 70%)으로 산출합니다. */
 const FIN_BASE = [
- ['2025.05',2,10000000,10000000],['2025.06',16,74000002,57800001],['2025.07',12,119810000,113810000],
- ['2025.08',14,68000000,56000000],['2025.09',2,4280000,2996000],['2025.11',12,108000000,75600000],
- ['2025.12',18,242000000,169400000],
- ['2026.01',2,40000000,28000000],['2026.02',4,30000000,21000000],['2026.03',9,89500000,67300000],
- ['2026.04',8,43000000,34300000],['2026.05',14,116073000,88451100],['2026.06',3,25000000,25000000],
- ['2026.07',4,40500000,28350000],['2026.08',11,52000000,52000000],['2026.09',5,22000000,15400000],
- ['2026.10',5,29000000,20300000],['2026.11',11,69000000,54900000],['2026.12',12,79200000,62040000],
+ ["2026.01",2,40000000,28000000],
+ ["2026.02",4,30000000,21000000],
+ ["2026.03",9,89500000,67300000],
+ ["2026.04",8,43000000,34300000],
+ ["2026.05",14,116073000,88451100],
+ ["2026.06",3,25000000,25000000],
+ ["2026.07",4,40500000,28350000],
+ ["2026.08",7,30000000,30000000],
+ ["2026.09",5,22000000,15400000],
+ ["2026.10",14,48850000,48850000],
+ ["2026.11",19,69000000,54900000],
+ ["2026.12",12,79200000,62040000],
 ];
-const FIN_LIVE_FROM = '2025.01';   /* 포털에서 새로 등록된 부킹은 해당 월 실적에 합산됩니다 */
-/* 입금 완료 시점 — 이 월까지는 정산(입금) 완료로 보고, 그 이후 월의 실적은
-   아직 입금 확인 전(가부킹 포함)이므로 미수금으로 관리합니다. */
+const FIN_DETAIL = [["2026.01", "랜드로버 디펜더, 벨라", "나스미디어", "2026-01-04", "2026-01-31", 40000000, 28000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.02", "랜드로버 디펜더, 벨라", "나스미디어", "2026-02-01", "2026-02-14", 20000000, 14000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.02", "랜드로버 디펜더, 벨라", "나스미디어", "2026-02-22", "2026-02-28", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.03", "부쉐론", "나스미디어", "2026-03-09", "2026-03-22", 44000000, 30800000, 5, "앱 헤드라인 뉴스 · 앱 하단 배너 · 앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업", "완료"], ["2026.03", "샤넬", "직거래", "2026-03-15", "2026-03-15", 12500000, 12500000, 1, "카카오톡 발송", "완료"], ["2026.03", "랜드로버 디펜더", "나스미디어", "2026-03-15", "2026-03-30", 30000000, 21000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.03", "샤넬", "직거래", "2026-03-15", "2026-03-15", 3000000, 3000000, 1, "앱 푸시 발송", "완료"], ["2026.04", "랜드로버 디펜더", "나스미디어", "2026-04-05", "2026-04-11", 10000000, 7000000, 2, "앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.04", "로베에", "M2Digital", "2026-04-15", "2026-04-28", 9000000, 6300000, 1, "앱 오픈 팝업", "완료"], ["2026.04", "랜드로버 디펜더", "나스미디어", "2026-04-19", "2026-04-25", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.04", "현대자동차", "직거래", "2026-04-21", "2026-05-21", 14000000, 14000000, 3, "앱 이벤트 메뉴 · 앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.05", "구찌", "나스미디어", "2026-04-30", "2026-05-06", 38073000, 26651100, 3, "앱 메인 배너 · 앱 오픈 팝업 · 앱 스플래시", "완료"], ["2026.05", "샤넬", "직거래", "2026-05-03", "2026-05-03", 14000000, 14000000, 2, "카카오톡 메시지 발송 · IG스토리(s)", "완료"], ["2026.05", "한섬", "직거래", "2026-05-14", "2026-05-20", 10000000, 10000000, 2, "앱 오픈 팝업 · 앱 메인 배너", "완료"], ["2026.05", "아우디", "인크로스", "2026-05-19", "2026-05-25", 10000000, 7000000, 2, "앱 메인 배너 · 앱 오픈 팝업", "완료"], ["2026.05", "부쉐론", "나스미디어", "2026-05-25", "2026-06-07", 44000000, 30800000, 5, "앱 오픈 팝업 · 앱 스플래시 · 앱 헤드라인 뉴스 · 앱 메인 배너 · 앱 하단 배너", "완료"], ["2026.06", "샤넬", "직거래", "2026-06-12", "2026-06-12", 25000000, 25000000, 3, "앱 푸시 11만명 · IG스토리(s) · 카카오톡 22만명", "완료"], ["2026.11", "까르띠에 까르띠에 연말 캠페인", "M2Digital", "2026-11-15", "2026-11-21", 47000000, 32900000, 14, "앱 헤드라인 뉴스(3구좌) · 앱 스플래시 · 앱 푸시 발송 25만명 · 앱 메인 배너(3구좌) · 앱 오픈 팝업(3구좌) · 앱 하단 배너(3구좌)", "부킹"], ["2026.07", "피아제 폴로 캠페인", "M2Digital", "2026-07-26", "2026-08-15", 40500000, 28350000, 4, "앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스 · 카카오톡 메시지 발송 15만명", "세금계산서"], ["2026.08", "생로랑 8월 캠페인", "직거래", "2026-08-30", "2026-09-05", 30000000, 30000000, 7, "앱 스플래시 · 앱 푸시 발송 10만명 · 앱 오픈 팝업 · 앱 메인 배너 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 이벤트 메뉴", "집행"], ["2026.09", "부쉐론 9월 캠페인", "나스미디어", "2026-09-20", "2026-09-26", 22000000, 15400000, 5, "앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너", "부킹"], ["2026.12", "피아제 12월 캠페인", "M2Digital", "2026-12-06", "2026-12-26", 31200000, 21840000, 3, "앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스", "가부킹"], ["2026.12", "부쉐론 12월 캠페인", "직거래", "2026-12-06", "2026-12-12", 22000000, 22000000, 5, "앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스", "부킹"], ["2026.11", "부쉐론 11월 캠페인", "직거래", "2026-11-29", "2026-12-05", 22000000, 22000000, 5, "앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너", "가부킹"], ["2026.12", "보테가 베네타 EOY 캠페인", "나스미디어", "2026-12-13", "2026-12-19", 26000000, 18200000, 4, "앱 메인 배너 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 스플래시", "가부킹"], ["2026.10", "까르띠에 까르띠에 ITW 캠페인", "직거래", "2026-10-04", "2026-10-10", 48850000, 48850000, 14, "앱 스플래시 · 앱 푸시 발송 20만명 · 앱 메인 배너(3구좌) · 앱 오픈 팝업(3구좌) · 앱 하단 배너(3구좌) · 앱 헤드라인 뉴스(3구좌)", "부킹"]];
+const FIN_LIVE_FROM = '2026.01';   /* 포털에서 새로 등록된 부킹은 해당 월 실적에 합산 */
 const FIN_SETTLED_THRU = '2026.06';
-/* 월별 상세 — [월, 광고주, 판매사, 시작일, 종료일, 매출, 입금가, 구좌수, 상품] */
-const FIN_DETAIL = [["2025.05","샤넬","직거래","2025-05-13","2025-05-13",5000000,5000000,1,"카카오톡·인스타 스토리"],["2025.06","한섬 해외패션","직거래","2025-05-31","2025-06-29",5833333,5833333,1,"앱 메인 배너"],["2025.06","부쉐론","나스미디어","2025-06-01","2025-06-07",846154,592308,1,"앱 하단 배너"],["2025.06","랜드로버","커스텀 그라운드","2025-06-01","2025-06-07",5000000,3500000,2,"앱 오픈 팝업 · 앱 푸시 발송"],["2025.06","한섬 해외패션","직거래","2025-06-01","2025-06-04",4166667,4166667,1,"앱 푸시 발송"],["2025.06","부쉐론","나스미디어","2025-06-01","2025-06-07",21153847,14807693,3,"앱 스플래시 · 앱 오픈 팝업 · 앱 메인 배너"],["2025.07","아파트아이","직거래","2025-07-13","2025-09-13",39905000,39905000,2,"사이니지(더현서) · 사이니지(판교)"],["2025.07","랜드로버","나스미디어","2025-07-14","2025-07-20",10000000,7000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2025.07","샤넬","직거래","2025-07-21","2025-07-21",7400000,7400000,1,"인스타그램 게시"],["2025.07","샤넬","직거래","2025-07-24","2025-07-24",2600000,2600000,1,"카카오톡 발송"],["2025.08","랜드로버 이보크","나스미디어","2025-08-03","2025-08-09",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2025.08","아파트아이","직거래","2025-08-17","2025-08-30",14000000,14000000,1,"앱 메인 배너"],["2025.08","랜드로버 벨라","나스미디어","2025-08-17","2025-08-23",7000000,4900000,1,"앱 메인 배너"],["2025.08","아파트아이","직거래","2025-08-17","2025-08-30",0,0,2,"앱 푸시 발송 · 앱 이벤트 메뉴"],["2025.08","랜드로버 벨라","나스미디어","2025-08-17","2025-08-23",3000000,2100000,1,"앱 오픈 팝업"],["2025.09","랜드로버 벨라","나스미디어","2025-09-07","2025-09-08",2140000,1498000,1,"팝업배너·메인배너"],["2025.11","랜드로버 디펜더","나스미디어","2025-11-16","2025-11-22",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2025.11","부쉐론","나스미디어","2025-11-20","2025-12-06",44000000,30800000,4,"앱 오픈 팝업 · 앱 하단 배너 · 앱 메인 배너 · 앱 스플래시"],["2025.12","랜드로버 디펜더, 벨라","나스미디어","2025-12-07","2025-12-27",21000000,14700000,1,"앱 메인 배너"],["2025.12","예거르쿨트르","M2Digital","2025-12-07","2025-12-20",44000000,30800000,2,"앱 스플래시 · 앱 메인 배너"],["2025.12","랜드로버 디펜더, 벨라","나스미디어","2025-12-07","2025-12-27",9000000,6300000,1,"앱 오픈 팝업"],["2025.12","삼성닷컴","나스미디어","2025-12-11","2025-12-17",3000000,2100000,1,"앱 오픈 팝업"],["2025.12","부쉐론","나스미디어","2025-12-21","2026-01-03",44000000,30800000,4,"앱 오픈 팝업 · 앱 하단 배너 · 앱 스플래시 · 앱 메인 배너"],["2025.05","샤넬","직거래","2025-05-13","2025-05-13",5000000,5000000,1,"카카오톡·인스타 스토리"],["2025.06","한섬 해외패션","직거래","2025-05-31","2025-06-29",5833333,5833333,1,"앱 메인 배너"],["2025.06","랜드로버","커스텀 그라운드","2025-06-01","2025-06-07",1875000,1312500,1,"앱 오픈 팝업"],["2025.06","부쉐론","나스미디어","2025-06-01","2025-06-07",22000001,15400001,4,"앱 하단 배너 · 앱 메인 배너 · 앱 오픈 팝업 · 앱 스플래시"],["2025.06","랜드로버","커스텀 그라운드","2025-06-01","2025-06-07",3125000,2187500,1,"앱 푸시 발송"],["2025.06","한섬 해외패션","직거래","2025-06-01","2025-06-04",4166667,4166667,1,"앱 푸시 발송"],["2025.07","아파트아이","직거래","2025-07-13","2025-09-13",39905000,39905000,2,"사이니지(판교) · 사이니지(더현서)"],["2025.07","랜드로버","나스미디어","2025-07-14","2025-07-20",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2025.07","샤넬","직거래","2025-07-21","2025-07-21",7400000,7400000,1,"인스타그램 게시"],["2025.07","샤넬","직거래","2025-07-24","2025-07-24",2600000,2600000,1,"카카오톡 발송"],["2025.08","랜드로버 이보크","나스미디어","2025-08-03","2025-08-09",10000000,7000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2025.08","아파트아이","직거래","2025-08-17","2025-08-30",14000000,14000000,2,"앱 푸시 발송 · 앱 메인 배너"],["2025.08","랜드로버 벨라","나스미디어","2025-08-17","2025-08-23",3000000,2100000,1,"앱 오픈 팝업"],["2025.08","아파트아이","직거래","2025-08-17","2025-08-23",0,0,1,"앱 이벤트 메뉴"],["2025.08","랜드로버 벨라","나스미디어","2025-08-17","2025-08-23",7000000,4900000,1,"앱 메인 배너"],["2025.09","랜드로버 벨라","나스미디어","2025-09-07","2025-09-08",2140000,1498000,1,"팝업배너·메인배너"],["2025.11","랜드로버 디펜더","나스미디어","2025-11-16","2025-11-22",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2025.11","부쉐론","나스미디어","2025-11-20","2025-12-06",44000000,30800000,4,"앱 오픈 팝업 · 앱 하단 배너 · 앱 메인 배너 · 앱 스플래시"],["2025.12","예거르쿨트르","M2Digital","2025-12-07","2025-12-20",44000000,30800000,2,"앱 메인 배너 · 앱 스플래시"],["2025.12","랜드로버 디펜더, 벨라","나스미디어","2025-12-07","2025-12-27",30000000,21000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2025.12","삼성닷컴","나스미디어","2025-12-11","2025-12-17",3000000,2100000,1,"앱 오픈 팝업"],["2025.12","부쉐론","나스미디어","2025-12-21","2026-01-03",44000000,30800000,4,"앱 오픈 팝업 · 앱 스플래시 · 앱 하단 배너 · 앱 메인 배너"],["2026.01","랜드로버 디펜더, 벨라","나스미디어","2026-01-04","2026-01-31",40000000,28000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2026.02","랜드로버 디펜더, 벨라","나스미디어","2026-02-01","2026-02-14",20000000,14000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2026.02","랜드로버 디펜더, 벨라","나스미디어","2026-02-22","2026-02-28",10000000,7000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2026.03","부쉐론","나스미디어","2026-03-09","2026-03-22",44000000,30800000,5,"앱 오픈 팝업 · 앱 스플래시 · 앱 헤드라인 뉴스 · 앱 하단 배너 · 앱 메인 배너"],["2026.03","샤넬","직거래","2026-03-15","2026-03-15",12500000,12500000,1,"카카오톡 발송"],["2026.03","랜드로버 디펜더","나스미디어","2026-03-15","2026-03-30",30000000,21000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2026.03","샤넬","직거래","2026-03-15","2026-03-15",3000000,3000000,1,"앱 푸시 발송"],["2026.04","랜드로버 디펜더","나스미디어","2026-04-05","2026-04-11",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2026.04","로베에","M2Digital","2026-04-15","2026-04-28",9000000,6300000,1,"앱 오픈 팝업"],["2026.04","랜드로버 디펜더","나스미디어","2026-04-19","2026-04-25",10000000,7000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2026.04","현대자동차","직거래","2026-04-21","2026-05-21",14000000,14000000,3,"앱 이벤트 메뉴 · 앱 오픈 팝업 · 앱 메인 배너"],["2026.05","구찌","나스미디어","2026-04-30","2026-05-06",38073000,26651100,3,"앱 메인 배너 · 앱 오픈 팝업 · 앱 스플래시"],["2026.05","샤넬","직거래","2026-05-03","2026-05-03",14000000,14000000,2,"카카오톡 메시지 발송 · IG스토리(s)"],["2026.05","한섬","직거래","2026-05-14","2026-05-20",10000000,10000000,2,"앱 메인 배너 · 앱 오픈 팝업"],["2026.05","아우디","인크로스","2026-05-19","2026-05-25",10000000,7000000,2,"앱 오픈 팝업 · 앱 메인 배너"],["2026.05","부쉐론","나스미디어","2026-05-25","2026-06-07",44000000,30800000,5,"앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너"],["2026.06","샤넬","직거래","2026-06-12","2026-06-12",25000000,25000000,3,"앱 푸시 11만명 · IG스토리(s) · 카카오톡 22만명"],["2026.10","까르띠에\n까르띠에 ITW 캠페인","M2Digital","2026-10-04","2026-10-10",29000000,20300000,5,"앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스"],["2026.11","까르띠에\n까르띠에 연말 캠페인","M2Digital","2026-11-15","2026-11-21",47000000,32900000,6,"앱 헤드라인 뉴스(3구좌) · 앱 스플래시 · 앱 푸시 발송 25만명 · 앱 메인 배너(3구좌) · 앱 오픈 팝업(3구좌) · 앱 하단 배너(3구좌)"],["2026.07","피아제\n폴로 캠페인","M2Digital","2026-07-26","2026-08-15",40500000,28350000,4,"앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스 · 카카오톡 메시지 발송 15만명"],["2026.08","생로랑\n8월 캠페인","직거래","2026-08-30","2026-09-05",30000000,30000000,7,"앱 스플래시 · 앱 푸시 발송 10만명 · 앱 오픈 팝업 · 앱 메인 배너 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 이벤트 메뉴"],["2026.09","부쉐론\n9월 캠페인","나스미디어","2026-09-20","2026-09-26",22000000,15400000,5,"앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너"],["2026.12","피아제\n12월 캠페인","M2Digital","2026-12-06","2026-12-26",31200000,21840000,3,"앱 메인 배너 · 앱 오픈 팝업 · 앱 헤드라인 뉴스"],["2026.12","부쉐론\n12월 캠페인","직거래","2026-12-06","2026-12-12",22000000,22000000,5,"앱 메인 배너 · 앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스"],["2026.11","부쉐론\n11월 캠페인","직거래","2026-11-29","2026-12-05",22000000,22000000,5,"앱 스플래시 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 헤드라인 뉴스 · 앱 메인 배너"],["2026.08","보테가베네타\n보테가베네타 EOY 캠페인","직거래","2026-08-19","2026-08-25",22000000,22000000,4,"앱 스플래시 · 앱 하단 배너 · 앱 오픈 팝업 · 앱 메인 배너"],["2026.12","보테가 베네타\nEOY 캠페인","나스미디어","2026-12-13","2026-12-19",26000000,18200000,4,"앱 메인 배너 · 앱 오픈 팝업 · 앱 하단 배너 · 앱 스플래시"]];
 
 /* ═══════════ 상태 & 유틸 ═══════════ */
 const $ = id => document.getElementById(id);
@@ -2044,13 +2057,14 @@ function renderCal(mode){
   for(let i=0;i<42;i++){
     const d=new Date(start); d.setDate(start.getDate()+i);
     const ds=dstr(d), inM = d.getMonth()===cur.getMonth();
-    const rows = bookingsOn(ds);
+    let rows = bookingsOn(ds);
+    if(!isAdmin) rows = rows.filter(r=>r.c.adv===me.adv);   /* 광고주는 내 광고만 */
     const SHORT={splash:'스플래시',popup:'오픈팝업',main:'앱메인',bottom:'하단배너',headline:'헤드라인',event:'이벤트메뉴',push:'푸시',kakao:'카카오톡',insta:'인스타',lms:'LMS'};
     const prods=[...new Set(rows.map(r=>r.it.p))];
     const chips = prods.slice(0,4).map(pid=>{
       const rs=rows.filter(r=>r.it.p===pid);
       const cnt=rs.reduce((a,r)=>a+(r.it.qty||1),0);
-      const mineP=!isAdmin&&rs.some(r=>r.c.adv===me.adv);
+      const mineP=!isAdmin;
       return `<span class="evchip ${mineP?'mine':''}">${SHORT[pid]}<i class="cnt">${cnt}</i></span>`;
     }).join('') + (prods.length>4?`<span class="evchip more">+${prods.length-4}</span>`:'');
     const dots = chips?`<div class="evchips">${chips}</div>`:'';
@@ -2064,20 +2078,42 @@ function dayCap(p){ return p.slots || (p.id==='insta'?5:1); }   /* 발송형 1�
 function renderDayPanel(mode, ds){
   const isAdmin = mode==='admin';
   const el = $('dayPanel');
-  const rows = bookingsOn(ds);
   const d = dParse(ds);
-  let html = `<div class="dp-date">${d.getMonth()+1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]})</div><div class="dp-sub">${isAdmin?'전체 구좌 판매 현황':'전체 구좌 예약 현황'}</div>`;
-  html += `<table class="dp-tbl"><tr><th></th><th><span class="hh h-mine">내 광고</span></th><th><span class="hh h-free">잔여</span></th><th><span class="hh h-all">전체</span></th></tr>`;
+  const head = `<div class="dp-date">${d.getMonth()+1}월 ${d.getDate()}일 (${'일월화수목금토'[d.getDay()]})</div>`;
+  if(!isAdmin){
+    /* 광고주 — 내 광고 스케줄만 표시 */
+    const mine = bookingsOn(ds).filter(r=>r.c.adv===me.adv);
+    let html = head + `<div class="dp-sub">내 광고 스케줄</div>`;
+    if(!mine.length){
+      html += `<p class="hint" style="margin:10px 0 2px">이 날짜에 게재되는 내 광고가 없어요</p>`;
+      el.innerHTML = html; return;
+    }
+    const byCamp={};
+    mine.forEach(r=>{ (byCamp[r.c.id]||(byCamp[r.c.id]={c:r.c,its:[]})).its.push(r.it); });
+    html += `<table class="dp-tbl dp-mine"><tr><th>캠페인</th><th>구좌</th><th class="num">기간</th></tr>`;
+    Object.values(byCamp).forEach(g=>{
+      const s0=g.its.reduce((a,i)=>a<i.s?a:i.s, g.its[0].s);
+      const e0=g.its.reduce((a,i)=>a>i.e?a:i.e, g.its[0].e);
+      html += `<tr><td class="pn"><b>${esc(g.c.name)}</b><span class="dp-st">${g.c.status}</span></td>
+        <td>${g.its.map(i=>`<span class="evchip mine">${P[i.p].name.replace('앱 ','')}${(i.qty||1)>1?`<i class="cnt">${i.qty}</i>`:''}</span>`).join('')}</td>
+        <td class="num dp-per">${kdate(s0)}<br>~ ${kdate(e0)}</td></tr>`;
+    });
+    html += `</table>`;
+    el.innerHTML = html;
+    return;
+  }
+  const rows = bookingsOn(ds);
+  let html = head + `<div class="dp-sub">전체 구좌 판매 현황</div>`;
+  html += `<table class="dp-tbl"><tr><th></th><th><span class="hh h-mine">판매</span></th><th><span class="hh h-free">잔여</span></th><th><span class="hh h-all">전체</span></th></tr>`;
   PRODUCTS.forEach(p=>{
     const rs = rows.filter(r=>r.it.p===p.id);
     const used = rs.reduce((a,r)=>a+(r.it.qty||1),0);
     const cap = dayCap(p);
     const left = Math.max(0, cap-used);
-    const mineN = isAdmin ? 0 : rs.filter(r=>r.c.adv===me.adv).reduce((a,r)=>a+(r.it.qty||1),0);
     const freeCell = left===0
       ? `<span class="dp-wrap"><b class="dp-n zero">0</b><span class="dp-act full">마감</span></span>`
       : `<span class="dp-wrap"><b class="dp-n">${left}</b><button class="dp-act dp-bk" type="button" data-bk="${p.id}:${ds}">부킹</button></span>`;
-    html += `<tr class="${mineN?'mine-row':''}"><td class="pn">${p.name}</td><td class="num">${isAdmin?used:mineN}</td><td class="num free">${freeCell}</td><td class="num all">${cap}</td></tr>`;
+    html += `<tr><td class="pn">${p.name}</td><td class="num">${used}</td><td class="num free">${freeCell}</td><td class="num all">${cap}</td></tr>`;
   });
   html += `</table>`;
   el.innerHTML = html;
@@ -2125,6 +2161,7 @@ function renderAdminTl(){
 RENDER.calendar = () => {
   const admin = me && me.role==='admin';
   document.querySelector('#pg-calendar .cal-wrap').style.display = admin?'none':'';
+  if($('calTitle')) $('calTitle').textContent = admin?'전체 부킹 현황':'내 부킹 현황';
   $('adminTlWrap').style.display = admin?'':'none';
   if(admin){ renderAdminTl(); renderSlotDay(); } else renderCal(calMode());
 };
@@ -2378,7 +2415,7 @@ function buildGuide(p){
   if(curSlot==='main') rows.push(['텍스트 존','좌상단 텍스트 영역 확보 — 줄당 15자 · 최대 2줄, 이미지 내 텍스트 삽입 금지']);
   if(curSlot==='headline') rows.push(['오브젝트','우측 배치 · 배경 투명 PNG 권장 · 텍스트 미포함']);
   if(curSlot==='splash') rows.push(['안전 영역','중앙 로고 존 침범 금지 · 주요 요소는 하단 1/3에 배치']);
-  if(curSlot==='push') rows.push(['문구 규정','제목 15자 · 내용 25자 이내, 이모지 사용 불가']);
+  if(curSlot==='push') rows.push(['문구 규정','제목 15자 · 내용 30자 이내, 이모지 사용 불가']);
   rows.push(['소재 전달','게첨(발송)일 기준 심의 <b>7영업일 전</b> · 확정 소재 <b>5영업일 전</b>']);
   let h='<table class="tbl" style="font-size:12px">'+rows.map(r=>`<tr><td style="width:84px;font-weight:800;color:var(--ink-3);font-size:11px;white-space:nowrap">${r[0]}</td><td>${r[1]}</td></tr>`).join('')+'</table>';
   if(p.psd) h+=`<a class="dl-btn btn-sm" style="margin-top:11px" href="${p.psd}" download><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5"/><path d="M4 21h16"/></svg>${p.name} PSD 템플릿 다운로드 <small>${p.spec?p.spec.w+'×'+p.spec.h:''}</small></a>`;
@@ -2412,7 +2449,7 @@ function updateSubmit(){ cartCountUpd(); }
 function validateSlot(d){
   const w=[];
   if(curSlot==='main'&&!d.t1) w.push('메인 제목 1줄이 비어 있어요');
-  if(curSlot==='headline'&&(!d.t1||!d.t2)) w.push('헤드라인 문구 2줄이 비어 있어요');
+  if(curSlot==='headline'&&!d.t1) w.push('헤드라인 문구 1줄이 비어 있어요');
   if(curSlot==='event'&&!d.ev) w.push('이벤트 메뉴 문구가 비어 있어요');
   if(curSlot==='push'&&(!d.pushT||!d.pushB)) w.push('푸시 제목·내용이 비어 있어요');
   if(curSlot==='kakao'&&(!d.kkT||!d.kkB)) w.push('카카오 메시지 제목·본문이 비어 있어요');
@@ -2421,8 +2458,14 @@ function validateSlot(d){
   const needImg=!['event','lms','push','kakao','insta','headline'].includes(curSlot);
   if(needImg&&!d.imgs.some(Boolean)) w.push('소재 이미지가 아직 없어요');
   if(!['lms','splash'].includes(curSlot)&&!d.url) w.push('이동 페이지 URL이 비어 있어요');
-  if(w.length) toast(`참고: ${w[0]} — 담은 뒤에도 언제든 수정할 수 있어요`);
-  return true;
+  if(!w.length) return true;
+  if(setupCamp==='__new'){   /* 부킹함에 담는 단계 — 소재는 나중에 등록 가능 */
+    toast(`참고: ${w[0]} — 담은 뒤에도 언제든 수정할 수 있어요`);
+    return true;
+  }
+  /* 소재 등록 단계 — 필수값을 모두 채워야 저장됩니다 */
+  toast(`필수 항목이 비어 있어 저장할 수 없어요 — ${w.join(' · ')}`);
+  return false;
 }
 $('saveSlotBtn').addEventListener('click', async ()=>{
   saveDraft();
@@ -2455,7 +2498,7 @@ $('saveSlotBtn').addEventListener('click', async ()=>{
       vol: curSlot==='push'?{pv2:20000,pv10:100000,pv20:200000}[d.pushVol]
          : curSlot==='kakao'?Math.max(1,+d.kkVol||1)*10000
          : curSlot==='lms'?Math.max(1,+d.lmsVol||1)*10000 : undefined,
-      mat:true, creative:d};
+      mat:false, creative:d};   /* 소재는 [소재 등록] 탭에서 저장해야 완료 처리 */
     renderSlotTabs(); updateSubmit(); updatePrice();
     $('saveSlotBtn').textContent='담은 구좌 업데이트';
     cartCountUpd(); toast(`🛒 ${P[curSlot].name}를 부킹함에 담았어요 — 우측 상단 부킹함에서 전체 금액을 확인할 수 있어요`);
@@ -2576,6 +2619,14 @@ function renderCart(){
     <button class="cart-cta" id="cartCta" ${!c.sel.length||(c.sel.length===1&&P[c.sel[0].k].need2)?'disabled':''}>${c.sel.length?`${fmt(c.total)} 부킹 요청하기`:'구좌를 선택해 주세요'}</button>
     <p class="hint" style="margin-top:10px;text-align:center">부킹 요청 → 담당자 승인 → 서류·소재 등록 → 광고 게시 순으로 진행됩니다</p>`;
   $('cartBody').querySelectorAll('[data-ck]').forEach(x=>x.addEventListener('change',()=>{ cart[x.dataset.ck].on=x.checked; renderCart(); }));
+  const del=$('cartDelSel');
+  if(del) del.onclick=()=>{
+    const ks=Object.keys(cart).filter(k=>cart[k].on!==false);
+    if(!ks.length){ toast('삭제할 구좌를 체크해 주세요'); return; }
+    ks.forEach(k=>delete cart[k]);
+    renderCart(); renderSlotTabs(); cartCountUpd(); updatePrice();
+    toast(`선택한 ${ks.length}개 구좌를 부킹함에서 삭제했어요`);
+  };
   $('cartBody').querySelectorAll('[data-tg]').forEach(x=>x.addEventListener('change',()=>{ cart[x.dataset.tg].tg=x.checked; renderCart(); }));
   $('cartBody').querySelectorAll('[data-cwm],[data-cwp]').forEach(x=>x.addEventListener('click',()=>{
     const k=x.dataset.cwm||x.dataset.cwp, it=cart[k];
@@ -2707,7 +2758,9 @@ function applyPreview(){
     case 'push': {
       $('pushScreen').classList.add('show');
       $('pnTitle').textContent=d.pushT||'푸시 제목이 여기에 표시됩니다';
-      $('pnBody').textContent='(광고) '+(d.pushB||'푸시 내용이 여기에 표시됩니다');
+      const _b=d.pushB||'푸시 내용이 여기에 표시됩니다';
+      /* 실제 잠금화면 알림은 25자 이후로 말줄임 처리됩니다 */
+      $('pnBody').textContent='(광고) '+(_b.length>25?_b.slice(0,25)+'…':_b);
       const im=d.imgs.find(Boolean);
       $('pnImgZone').style.display='';
       $('pushEmpty').style.display=im?'none':''; $('pushAdImg').style.display=im?'':'none';
@@ -2746,11 +2799,13 @@ function greetSlidesArr(){
   const d=drafts.headline;
   if(d&&(d.t1||d.t2||d.imgs.some(Boolean))){
     const im=d.imgs.find(Boolean);
-    base.unshift({g1:d.t1||'헤드라인 문구 1줄',g2:d.t2||'헤드라인 문구 2줄',tk:im?im.src:null,st:'ad',ad:true});
+    base.unshift({g1:d.t1||'헤드라인 문구 1줄',g2:d.t2||'',tk:im?im.src:null,st:'ad',ad:true});
   }
   return base;
 }
-const greetSlideHTML = s => `<div class="greet-slide"><div class="g1">${esc(s.g1)}</div><div class="g2">${esc(s.g2)}</div></div>`;
+const greetSlideHTML = s => s.g2
+  ? `<div class="greet-slide"><div class="g1">${esc(s.g1)}</div><div class="g2">${esc(s.g2)}</div></div>`
+  : `<div class="greet-slide one"><div class="g2">${esc(s.g1)}</div></div>`;
 function greetTicketSet(el,s){
   if(s&&s.tk){ el.style.cssText='position:absolute;pointer-events:none;z-index:6;filter:drop-shadow(0 3px 7px rgba(0,0,0,.16));object-fit:contain;'+TKSTYLE[s.st]; el.src=s.tk; el.style.display=''; el.style.opacity=1; el.style.transform='translateX(0)'; }
   else el.style.display='none';
@@ -2913,7 +2968,8 @@ function finDynamic(){
 const finAll = () => {
   const map={};
   FIN_BASE.forEach(r=>{
-    const unpaid = r[0]>FIN_SETTLED_THRU ? r[3] : 0;   /* 미정산 월(가부킹 포함) → 미수금 */
+    /* 미수금 — 대장의 광고 상태가 부킹·가부킹·집행인 건만 합산 */
+    const unpaid = FIN_DETAIL.filter(d=>d[0]===r[0]&&UNPAID_ST.includes(d[9])).reduce((a,d)=>a+d[6],0);
     map[r[0]]={ym:r[0],cnt:r[1],sale:r[2],dep:r[3],unpaid,base:true};
   });
   finDynamic().forEach(d=>{
@@ -3073,10 +3129,11 @@ const renderSlotDay = () => {
 };
 let finTab=String(TODAY.getFullYear());   /* 기본은 금년 */
 let finOpen={};   /* 정산 월별 상세 펼침 상태 */
+const UNPAID_ST = ['부킹','가부킹','집행'];          /* 대장 상태 기준 미수금 */
+const isLiveNow = (s,e) => !!s && !!e && s<=dstr(TODAY) && dstr(TODAY)<=e;
 function finDetailOf(ym){
-  const unsettled = ym>FIN_SETTLED_THRU;
   const rows=FIN_DETAIL.filter(d=>d[0]===ym).map(d=>({adv:d[1],agency:d[2],s:d[3],e:d[4],sale:d[5],dep:d[6],cnt:d[7],prods:d[8],
-    live:false, unpaid: unsettled?d[6]:0, tent: unsettled && d[4]>dstr(TODAY)}));
+    st:d[9]||'', live:isLiveNow(d[3],d[4]), unpaid: UNPAID_ST.includes(d[9])?d[6]:0, tent: d[9]==='가부킹'}));
   /* 포털에서 등록된 부킹도 같은 월 상세에 함께 표시 */
   CAMPAIGNS.forEach(c=>{
     if(stIdx(c)<0) return;
@@ -3091,6 +3148,8 @@ function finDetailOf(ym){
       prods:its.map(i=>P[i.p].name).join(' · '), live:true,
       unpaid: stIdx(c)<8 ? Math.round(sale*(c.agency?0.7:1)) : 0,
       tent: c.status==='부킹 요청'});
+  rows.forEach(r=>{ if(r.live===undefined) r.live=isLiveNow(r.s,r.e); });
+  rows.forEach(r=>{ r.live=isLiveNow(r.s,r.e); });
   });
   return rows.sort((a,b)=>a.s<b.s?-1:1);
 }
@@ -3124,7 +3183,7 @@ function renderFin(){
               <td class="num">${d.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(d.unpaid)}</span>`:'—'}</td></tr>`).join('')}
           </tbody></table>`
         : `<p class="hint" style="margin:8px 0">상세 내역이 없습니다.</p>`;
-      return `<tr class="fin-r"><td><button class="fin-more" data-fm="${r.ym}" type="button"><span class="fm-ar ${open?'on':''}">›</span>${r.ym}</button>${(!r.base||r.live)?' <span class="pill b" style="font-size:9.5px;padding:2px 7px">LIVE</span>':''}</td><td class="num">${r.cnt}</td><td class="num">${fmtN(r.sale)}</td><td class="num">${fmtN(r.dep)}</td><td class="num">${r.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(r.unpaid)}</span>`:'—'}</td></tr>
+      return `<tr class="fin-r"><td><button class="fin-more" data-fm="${r.ym}" type="button"><span class="fm-ar ${open?'on':''}">›</span>${r.ym}</button>${finDetailOf(r.ym).some(d=>d.live)?' <span class="pill b" style="font-size:9.5px;padding:2px 7px">LIVE</span>':''}</td><td class="num">${r.cnt}</td><td class="num">${fmtN(r.sale)}</td><td class="num">${fmtN(r.dep)}</td><td class="num">${r.unpaid?`<span style="color:var(--warn);font-weight:800">${fmtN(r.unpaid)}</span>`:'—'}</td></tr>
         ${open?`<tr class="fin-det-row"><td colspan="5">${detRows}</td></tr>`:''}`;
     }).join('');
     const t=yr.reduce((a,r)=>({cnt:a.cnt+r.cnt,sale:a.sale+r.sale,dep:a.dep+r.dep,unpaid:a.unpaid+r.unpaid}),{cnt:0,sale:0,dep:0,unpaid:0});
@@ -3277,12 +3336,12 @@ function stepDetail(c,i,admin){
         ${si===2?`<div class="bk-actions"><button class="act-btn primary" data-set="${c.id}:청약 확정">청약 확정</button><button class="act-btn danger" data-docfix="${c.id}">보완 요청</button></div>`:''}`;
       case 4: {
         const allMat=c.items.every(x=>x.mat||x.p==='event');
-        if(si<4||!allMat) return `${soon}<div class="sd-t">소재 등록 대기 중이에요</div>광고주가 소재를 등록하면 이곳에서 검수할 수 있어요.`;
+        if(si<4||!allMat) return `${soon}<div class="sd-t">소재 등록 중이에요</div>광고주가 소재를 등록하고 있어요. 등록이 완료되면 이곳에서 검수할 수 있습니다.`;
         if(si>4) return `${soon}<div class="sd-t">소재 승인이 완료되었어요</div>등록된 소재를 확인하고 이미지 다운로드·문구 복사할 수 있어요.
           <div class="bk-actions"><button class="act-btn" data-matgo="${c.id}">등록 소재 확인 · 다운로드</button></div>`;
         return `${soon}<span class="sd-soon">광고주 등록 완료 · 승인 대기</span><div class="sd-t">소재 승인이 필요해요</div>
           광고주가 등록한 소재를 검수해 주세요. 승인하면 <b>광고 예정</b> 단계로 넘어가고, 그때 게재 프리뷰를 등록하시면 됩니다.
-          <div class="bk-actions"><button class="act-btn primary" data-matgo="${c.id}">소재 확인하러 가기</button><button class="act-btn" data-matok="${c.id}">✓ 소재 승인 → 광고 예정</button><button class="act-btn danger" data-matrej="${c.id}">소재 반려</button></div>`;
+          <div class="bk-actions"><button class="act-btn" data-matgo="${c.id}" style="background:#fff;color:var(--ink-3)">소재 확인하러 가기</button><button class="act-btn primary" data-matok="${c.id}">✓ 소재 승인 → 광고 예정</button><button class="act-btn danger" data-matrej="${c.id}">소재 반려</button></div>`;
       }
       case 7: return `${soon}<div class="sd-t">광고 집행이 완료되었습니다</div>
         GA 리포트는 광고 종료 후 <b>영업일 기준 3일 이내</b>, 연계 매출 데이터는 광고 종료 후 <b>영업일 기준 7일 이내</b> 등록됩니다.<br>
@@ -3319,7 +3378,7 @@ function stepDetail(c,i,admin){
           <div class="bk-actions"><button class="act-btn primary" data-gomat="1">소재 수정하러 가기 ›</button><button class="act-btn" data-matre="${c.id}">✓ 재검수 요청</button></div>`;
       }
       const allMat=c.items.every(x=>x.mat||x.p==='event');
-      if(!allMat) return `${soon}<div class="sd-t">소재 등록이 필요해요</div>소재 등록 탭에서 구좌별 규격에 맞는 소재를 올려 주세요. 등록하시면 담당자 검수 후 게재됩니다.
+      if(!allMat) return `${soon}<div class="sd-t">소재 등록이 필요해요</div>소재 등록 탭에서 소재를 등록해 주세요.
         <div class="bk-actions"><button class="act-btn primary" data-gomat="1">소재 등록 탭으로 이동 ›</button></div>`;
       return `${soon}<span class="sd-soon">등록 완료 · 담당자 승인 대기</span><div class="sd-t">소재 등록이 완료되었어요</div>
         담당자가 소재를 검수하고 있어요. 승인되면 게재 미리보기를 직접 확인하고 내려받을 수 있습니다.
@@ -3765,7 +3824,7 @@ $('loginBtn').addEventListener('click',()=>{
 [$('loginId'),$('loginPw')].forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter') $('loginBtn').click(); }));
 $('logoutBtn').addEventListener('click',()=>{ me=null; document.body.classList.remove('admin'); $('appShell').classList.remove('on'); $('loginView').style.display='flex'; $('loginPw').value=''; });
 const NAVS = {
-  adv:[['products','광고 상품'],['board','부킹/광고 상태'],['material','소재 등록'],['calendar','전체 부킹 현황']],
+  adv:[['products','광고 상품'],['board','부킹/광고 상태'],['material','소재 등록'],['calendar','내 부킹 현황']],
   admin:[['board','부킹 게시판'],['calendar','부킹 현황'],['fin','정산'],['accounts','광고주 계정']]
 };
 function buildNav(){
@@ -3949,9 +4008,18 @@ function shotSVG(phone){
   const css = Array.prototype.map.call(document.querySelectorAll('style'), s=>s.textContent).join('\n')
                 .replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const node = new XMLSerializer().serializeToString(cloneForShot(phone));
+  /* SVG 안에는 <body>가 없어 body{font-family...} 규칙이 적용되지 않는다.
+     → 화면과 100% 동일한 타이포로 그려지도록 계산된 값을 래퍼에 직접 지정한다. */
+  const bs = getComputedStyle(document.body);
+  const rs = getComputedStyle(document.documentElement);
+  const ff = /var\(/.test(bs.fontFamily) ? (rs.getPropertyValue('--font')||bs.fontFamily) : bs.fontFamily;
+  const fc = /var\(/.test(bs.color) ? (rs.getPropertyValue('--ink')||'#111') : bs.color;
+  const wrap = 'font-family:'+ff+';font-size:'+bs.fontSize+';font-weight:'+bs.fontWeight
+             + ';line-height:'+bs.lineHeight+';letter-spacing:'+bs.letterSpacing+';color:'+fc
+             + ';-webkit-font-smoothing:antialiased;margin:0;padding:0';
   return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
        + '<foreignObject x="0" y="0" width="'+w+'" height="'+h+'">'
-       + '<div xmlns="http://www.w3.org/1999/xhtml"><style>'+css+'</style>'+node+'</div>'
+       + '<div xmlns="http://www.w3.org/1999/xhtml" style="'+wrap.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')+'"><style>'+css+'</style>'+node+'</div>'
        + '</foreignObject></svg>';
 }
 function svgToCanvas(svg, w, h, scale){
