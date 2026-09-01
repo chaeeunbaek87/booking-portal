@@ -870,7 +870,7 @@ textarea.text-input{resize:none;line-height:1.5}
 .slot-main{margin:0 13px 8px;position:relative}
 .main-ad-card{width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;position:relative;background:#E8EAE6}
 .main-ad-card img.mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.main-ad-title{position:absolute;top:17px;left:17px;right:17px;color:#fff;font-weight:700;font-size:19.5px;line-height:1.52;letter-spacing:-.3px;white-space:pre-line;z-index:3}
+.main-ad-title{position:absolute;top:17px;left:17px;right:17px;color:#fff;font-weight:700;font-size:19.5px;line-height:1.52;letter-spacing:-.3px;white-space:pre-line;z-index:3;min-height:59.3px;display:flex;flex-direction:column;justify-content:center}
 .main-ad-dim{position:absolute;left:0;right:0;top:0;height:100%;background:linear-gradient(180deg,rgba(0,0,0,.59) 0%,rgba(0,0,0,0) 60.5%);z-index:2;pointer-events:none}
 .card-pager{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.45);color:#fff;font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:11px;z-index:5}
 .pv-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:52px;color:#fff;font-size:26px;font-weight:600;z-index:6;display:flex;align-items:center;justify-content:center;text-shadow:0 1px 8px rgba(0,0,0,.45);line-height:1}
@@ -2268,9 +2268,10 @@ function setSlot(id, skipSave){
   curSlot=id; const p=P[id];
   const lock = setupCamp!=='__new';
   const c = lock ? CAMPAIGNS.find(x=>x.id===setupCamp) : null;
-  /* 이 구좌에 저장된 소재만 불러온다 — 다른 캠페인/광고주의 입력값이 남지 않도록 */
-  if(c){ const it=c.items.find(i=>i.p===id); drafts[id] = (it&&it.creative) ? it.creative : blankDraft(); }
-  else { drafts[id] = (cart[id]&&cart[id].creative) ? cart[id].creative : (drafts[id]||blankDraft()); }
+  /* 저장된 소재가 있으면 그것을, 없으면 같은 캠페인 안에서 입력 중이던 값을 그대로 유지한다.
+     (다른 캠페인·광고주의 값은 캠페인 전환/로그인 시 drafts를 비워 격리한다) */
+  if(c){ const it=c.items.find(i=>i.p===id); if(it&&it.creative) drafts[id]=it.creative; else if(!drafts[id]) drafts[id]=blankDraft(); }
+  else if(cart[id]&&cart[id].creative) drafts[id]=cart[id].creative;
   const d=draftOf(id);
   if(c){ const it=c.items.find(i=>i.p===id); if(it){ d.ds=it.s; d.de=it.e; d.send=it.s; } }
   renderSlotTabs();
@@ -2505,6 +2506,7 @@ $('saveSlotBtn').addEventListener('click', async ()=>{
     const allMat=c.items.every(i=>i.mat||i.p==='event');
     if(allMat&&stIdx(c)>=1&&stIdx(c)<=3){ c.status='소재 등록'; }
     renderSlotTabs();
+    if(typeof fbScheduleSync==='function') fbScheduleSync();   /* 저장 즉시 클라우드 반영 — 스냅샷에 덮어써지지 않도록 */
     toast(allMat?'소재 등록 완료! 심의(7영업일 소요) 통과 후 광고 예정으로 전환됩니다 ✓':'소재가 저장됐어요 — 남은 구좌 소재도 등록해 주세요');
   }else{
     const pr=slotPrice(curSlot);
@@ -3858,6 +3860,21 @@ RENDER.material = () => {
 };
 
 /* ═══════════ 로그인 / 네비 ═══════════ */
+/* 브라우저 자동완성 이력(이전에 입력했던 값 목록)이 뜨지 않도록 차단합니다 */
+function killAutofill(root){
+  (root||document).querySelectorAll('input,textarea').forEach(el=>{
+    if(['file','checkbox','radio','date','number','range'].includes(el.type)) { el.setAttribute('autocomplete','off'); return; }
+    if(el.id==='loginId'||el.id==='loginPw') return;
+    el.setAttribute('autocomplete','off');
+    el.setAttribute('autocorrect','off');
+    el.setAttribute('autocapitalize','off');
+    el.setAttribute('spellcheck','false');
+    if(!el.name) el.name='nf_'+Math.random().toString(36).slice(2,10);
+  });
+}
+killAutofill();
+new MutationObserver(ms=>{ ms.forEach(m=>m.addedNodes.forEach(n=>{ if(n.nodeType===1) killAutofill(n); })); })
+  .observe(document.body,{childList:true,subtree:true});
 document.querySelectorAll('.demo-chip').forEach(c=>c.addEventListener('click',()=>{ $('loginId').value=c.dataset.id; $('loginPw').value=c.dataset.pw; $('loginBtn').click(); }));
 $('loginBtn').addEventListener('click',()=>{
   const a = ACCOUNTS.find(x=>x.id===$('loginId').value.trim() && x.pw===$('loginPw').value);
@@ -4329,7 +4346,7 @@ function fbScheduleSync(){
     catch(e){ console.warn('cloud sync failed', e); }
   },500);
 }
-['board','material','calendar','accounts','fin','products'].forEach(k=>{
+['board','material','calendar','accounts','fin','products','setup'].forEach(k=>{
   const orig=RENDER[k];
   if(!orig) return;
   RENDER[k]=function(...args){ const r=orig.apply(this,args); fbScheduleSync(); return r; };
