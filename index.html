@@ -2273,7 +2273,9 @@ function setSlot(id, skipSave){
   const c = lock ? CAMPAIGNS.find(x=>x.id===setupCamp) : null;
   /* 저장된 소재가 있으면 그것을, 없으면 같은 캠페인 안에서 입력 중이던 값을 그대로 유지한다.
      (다른 캠페인·광고주의 값은 캠페인 전환/로그인 시 drafts를 비워 격리한다) */
-  if(c){ const it=c.items.find(i=>i.p===id); if(it&&it.creative) drafts[id]=it.creative; else if(!drafts[id]) drafts[id]=blankDraft(); }
+  if(c){ const it=c.items.find(i=>i.p===id);
+    if(it&&it.creative) drafts[id]={...it.creative, imgs:(it.creative.imgs||[]).slice()};
+    else if(!drafts[id]) drafts[id]=blankDraft(); }
   else if(cart[id]&&cart[id].creative) drafts[id]=cart[id].creative;
   const d=draftOf(id);
   if(c){ const it=c.items.find(i=>i.p===id); if(it){ d.ds=it.s; d.de=it.e; d.send=it.s; } }
@@ -2504,12 +2506,15 @@ $('saveSlotBtn').addEventListener('click', async ()=>{
         return;
       }
     }
-    await uploadDraftImages(d, `creatives/${c.id}/${curSlot}`);
-    c.items.filter(i=>i.p===curSlot).forEach(i=>{ i.mat=true; i.creative=d; });
+    /* 지금 폼에 있는 값을 그대로 스냅샷으로 커밋합니다 (이후 입력은 다시 저장해야 반영) */
+    const snap = {...d, imgs:(d.imgs||[]).slice()};
+    c.items.filter(i=>i.p===curSlot).forEach(i=>{ i.mat=true; i.creative=snap; });
     const allMat=c.items.every(i=>i.mat||i.p==='event');
     if(allMat&&stIdx(c)>=1&&stIdx(c)<=3){ c.status='소재 등록'; }
+    renderSlotTabs();                                          /* 체크 표시 즉시 전환 */
+    await uploadDraftImages(snap, `creatives/${c.id}/${curSlot}`);
     renderSlotTabs();
-    if(typeof fbScheduleSync==='function') fbScheduleSync();   /* 저장 즉시 클라우드 반영 — 스냅샷에 덮어써지지 않도록 */
+    if(typeof fbScheduleSync==='function') fbScheduleSync();   /* 저장 즉시 클라우드 반영 */
     toast(allMat?'소재 등록 완료! 심의(7영업일 소요) 통과 후 광고 예정으로 전환됩니다 ✓':'소재가 저장됐어요 — 남은 구좌 소재도 등록해 주세요');
   }else{
     const pr=slotPrice(curSlot);
@@ -4356,6 +4361,23 @@ function fbScheduleSync(){
   if(!orig) return;
   RENDER[k]=function(...args){ const r=orig.apply(this,args); fbScheduleSync(); return r; };
 });
+/* 원격 스냅샷을 받을 때, 아직 서버에 올라가지 않은 로컬 소재 등록 결과를 지키기 위해 병합합니다. */
+function mergeRemoteCampaigns(remoteList){
+  const local={}; CAMPAIGNS.forEach(c=>local[c.id]=c);
+  const merged=remoteList.map(rc=>{
+    const lc=local[rc.id];
+    if(!lc||!lc.items||!rc.items) return rc;
+    rc.items.forEach(ri=>{
+      const li=lc.items.find(x=>x.p===ri.p);
+      if(li&&li.mat&&!ri.mat){ ri.mat=true; ri.creative=li.creative; }   /* 로컬에서 방금 등록한 소재 유지 */
+    });
+    if(lc.docs) rc.docs={...(rc.docs||{}), ...lc.docs};
+    return rc;
+  });
+  /* 아직 동기화되지 않은 로컬 전용 캠페인은 그대로 둡니다 */
+  const ids=new Set(remoteList.map(r=>r.id));
+  return merged.concat(CAMPAIGNS.filter(c=>!ids.has(c.id)));
+}
 function fbStartSync(){
   if(!window.FB) return;
   window.FB.subscribeState(remote=>{
@@ -4363,7 +4385,7 @@ function fbStartSync(){
     const snapshot=JSON.stringify({CAMPAIGNS:remote.CAMPAIGNS||CAMPAIGNS,ACCOUNTS:remote.ACCOUNTS||ACCOUNTS});
     if(snapshot===_fbLastSynced) return;   /* 내가 방금 보낸 변경 — 재렌더 생략 */
     _fbLastSynced=snapshot;
-    if(remote.CAMPAIGNS) CAMPAIGNS=remote.CAMPAIGNS;
+    if(remote.CAMPAIGNS) CAMPAIGNS=mergeRemoteCampaigns(remote.CAMPAIGNS);
     if(remote.ACCOUNTS) ACCOUNTS=remote.ACCOUNTS;
     if(me&&curPg&&RENDER[curPg]) RENDER[curPg]();
     if(me) toast('☁️ 다른 화면에서의 변경사항이 동기화됐어요');
