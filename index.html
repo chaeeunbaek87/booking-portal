@@ -3320,6 +3320,12 @@ function campThumb(c){
   if(it) return `<img class="req-thumb" src="${it.creative.imgs.find(Boolean).src||it.creative.imgs.find(Boolean)}" alt="">`;
   return `<div class="req-thumb noimg">소재<br>미등록</div>`;
 }
+/* 관리자 — 게재 프리뷰 파일 첨부 칩 */
+function pvChips(c){
+  const pvs=pvList(c);
+  return pvs.map((u,i)=>`<span class="doc-chip ok"><a href="${u}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">✓ 게재 프리뷰 ${i+1}</a><button class="up" type="button" data-pvdel="${c.id}:${i}">삭제</button></span>`).join('')
+    + `<div class="doc-chip">게재 프리뷰 <small>선택</small><button class="up" type="button" data-pvup="${c.id}">파일 추가</button></div>`;
+}
 function pvList(c){ if(!c.previewImgs){ c.previewImgs = c.previewImg?[c.previewImg]:[]; delete c.previewImg; } return c.previewImgs; }
 function docsOf(c){ return c.docs || (c.docs={contract:false,biz:false,bank:false,seal:false,etc:0}); }
 function syncAuto(c){
@@ -3403,11 +3409,12 @@ function stepDetail(c,i,admin){
         ${si===2?`<div class="bk-actions"><button class="act-btn primary" data-set="${c.id}:청약 확정">청약 확정</button><button class="act-btn danger" data-docfix="${c.id}">보완 요청</button></div>`:''}`;
       case 4: {
         const allMat=c.items.every(x=>x.mat||x.p==='event');
-        if(si<4||!allMat) return `${soon}<div class="sd-t">소재 등록 중이에요</div>광고주가 소재를 등록하고 있어요. 등록이 완료되면 이곳에서 검수할 수 있습니다.`;
+        if(si<4||!allMat) return `${soon}<div class="sd-t">광고주가 소재 등록 중이에요</div>광고주가 소재를 등록하고 있어요. 등록이 완료되면 이곳에서 검수할 수 있습니다.`;
         if(si>4) return `${soon}<div class="sd-t">소재 승인이 완료되었어요</div>등록된 소재를 확인하고 이미지 다운로드·문구 복사할 수 있어요.
           <div class="bk-actions"><button class="act-btn" data-matgo="${c.id}">등록 소재 확인 · 다운로드</button></div>`;
         return `${soon}<span class="sd-soon">광고주 등록 완료 · 승인 대기</span><div class="sd-t">소재 승인이 필요해요</div>
           광고주가 등록한 소재를 검수해 주세요. 승인하면 <b>광고 예정</b> 단계로 넘어가고, 그때 게재 프리뷰를 등록하시면 됩니다.
+          <div class="docs-row">${pvChips(c)}</div>
           <div class="bk-actions"><button class="act-btn" data-matgo="${c.id}" style="background:#fff;color:var(--ink-3)">소재 확인하러 가기</button><button class="act-btn primary" data-matok="${c.id}">✓ 소재 승인 → 광고 예정</button><button class="act-btn danger" data-matrej="${c.id}">소재 반려</button></div>`;
       }
       case 7: return `${soon}<div class="sd-t">광고 집행이 완료되었습니다</div>
@@ -3452,17 +3459,18 @@ function stepDetail(c,i,admin){
         <div class="bk-actions"><button class="act-btn" data-gomat="1">등록한 소재 확인·수정 ›</button></div>`;
     }
     case 5: {
-      const its=c.items.map(x=>P[x.p].name.replace('앱 ','')+((x.qty||1)>1?' ×'+x.qty:'')).join(' · ');
-      if(admin) return `${soon}<span class="sd-soon">광고 예정</span><div class="sd-t">소재 승인 완료 — 광고주가 미리보기를 직접 확인합니다</div>
-        광고주는 <b>소재 등록</b> 화면 우측의 실시간 미리보기(iPhone 16 Pro 기준)에서 실제 게재 화면을 그대로 확인하고 이미지로 내려받습니다. 별도 프리뷰 파일 전달은 필요하지 않습니다.
+      const its=c.items.map(x=>P[x.p].name+((x.qty||1)>1?' ×'+x.qty:'')).join(' · ');
+      /* 광고주가 미리보기를 확인하면 양쪽 모두 '광고 중' 안내로 전환됩니다 */
+      if(c.pvConfirmed) return `${soon}<div class="sd-t">광고 중</div><b>구좌</b> &nbsp;${its}<br><b>기간</b> &nbsp;${kdate(c.items[0].s)} ~ ${kdate(campEnd(c))}`;
+      if(admin) return `${soon}<span class="sd-soon">프리뷰 확인 중</span><div class="sd-t">광고주가 프리뷰를 확인 중이에요</div>
+        광고주가 소재 등록 화면의 실시간 미리보기에서 게재 화면을 확인하고 있습니다. 확인이 완료되면 광고 중으로 전환됩니다.
+        <div class="docs-row">${pvChips(c)}</div>
         <div class="bk-actions"><button class="act-btn" data-pvgo="${c.id}">등록 소재 · 미리보기 확인 ›</button></div>`;
-      if(c.pvConfirmed) return `${soon}<span class="sd-soon">확인 완료</span><div class="sd-t">이대로 광고 예정입니다 — 일정에 맞춰 광고가 시작됩니다.</div>
-        <b>구좌</b> &nbsp;${its}
-        <div class="bk-actions"><button class="act-btn" data-pvgo="${c.id}">미리보기 다시 보기 · 다운로드</button></div>`;
       return `${soon}<span class="sd-soon">소재 승인 완료</span><div class="sd-t">게재 미리보기를 확인하고 내려받으세요</div>
         <b>구좌</b> &nbsp;${its}<br>
         아래 버튼을 누르면 소재 등록 화면으로 이동합니다. 우측 <b>실시간 미리보기</b>에서 실제 게재 화면을 확인하고 <b>⬇ 다운로드</b>로 이미지를 저장할 수 있습니다.
-        <div class="bk-actions"><button class="act-btn primary" data-pvgo="${c.id}">미리보기 확인 · 다운로드 ›</button><button class="act-btn" data-pvok="${c.id}">✓ 확인했어요</button></div>`;
+        ${pvList(c).length?`<div class="docs-row">${pvList(c).map((u,i)=>`<a class="doc-chip ok" href="${u}" target="_blank" rel="noopener" style="text-decoration:none">✓ 게재 프리뷰 ${i+1}</a>`).join('')}</div>`:''}
+        <div class="bk-actions"><button class="act-btn primary" data-pvgo="${c.id}">미리보기 다운로드 ›</button><button class="act-btn" data-pvok="${c.id}">✓ 확인했어요 · 이대로 광고 요청합니다</button></div>`;
     }
     case 6: {
       const its=c.items.map(x=>`${P[x.p].name}${(x.qty||1)>1?' ×'+x.qty:''}`).join(' · ');
@@ -3719,7 +3727,7 @@ RENDER.board = () => {
   }));
   $('reqList').querySelectorAll('[data-pvok]').forEach(b=>b.addEventListener('click',()=>{
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.pvok); if(!c) return;
-    c.pvConfirmed=true; c.pvRejectNote=undefined;
+    c.pvConfirmed=true; c.pvRejectNote=undefined; c.uiStep=undefined; syncAuto(c);
     toast('미리보기 확인이 완료되었어요 ✓ 일정에 맞춰 광고가 시작됩니다');
     RENDER.board();
   }));
@@ -3727,7 +3735,7 @@ RENDER.board = () => {
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.pvrej); if(!c) return;
     const note=window.prompt('수정이 필요한 내용을 알려주세요','프리뷰 이미지에 수정이 필요합니다');
     if(note===null) return;
-    c.pvRejectNote=note||'프리뷰 수정이 필요합니다'; c.pvConfirmed=false;
+    c.pvRejectNote=note||'프리뷰 수정이 필요합니다'; c.pvConfirmed=false; c.uiStep=undefined;
     toast('수정 요청을 보냈어요 — 담당자에게 사유가 전달됩니다');
     RENDER.board();
   }));
