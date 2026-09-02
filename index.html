@@ -3516,12 +3516,11 @@ function stepDetail(c,i,admin){
         <div class="reject-note">요청 사유: ${esc(c.pvRejectNote)}</div>
         담당자가 프리뷰를 다시 등록하면 이곳에서 확인할 수 있습니다.
         <div class="bk-actions">${dlBtn}</div>`;
-      if(!pvs.length) return `${soon}<span class="sd-soon">소재 승인 완료</span><div class="sd-t">소재가 승인되었습니다 ✓</div>
-        담당자가 게재 프리뷰를 준비하고 있어요 — 등록되면 이곳에서 확인하고 최종 확정해 주세요.<br>
-        그동안 <b>실시간 미리보기</b>에서 실제 게재 화면을 확인하고 이미지로 내려받을 수 있습니다.
-        <div class="bk-actions">${dlBtn}</div>`;
+      /* 담당자 프리뷰가 없어도 광고주가 실시간 미리보기로 직접 확인하고 확정할 수 있습니다 */
       return `${soon}<span class="sd-soon">소재 승인 완료</span><div class="sd-t">게재 프리뷰를 확인해 주세요</div>${gal}
-        <p style="margin:10px 0 0;font-size:12.5px">이대로 광고가 게시됩니다. 확인 후 <b>확정</b>해 주세요.</p>
+        <p style="margin:10px 0 0;font-size:12.5px">${pvs.length
+          ? '이대로 광고가 게시됩니다. 확인 후 <b>확정</b>해 주세요.'
+          : '이대로 광고가 게시됩니다. <b>미리보기 확인 · 다운로드</b>에서 실제 게재 화면을 확인한 뒤 <b>확정</b>해 주세요.'}</p>
         <div class="bk-actions"><button class="act-btn primary" data-pvok="${c.id}">✓ 확인했어요 · 이대로 광고 요청합니다</button><button class="act-btn danger" data-pvrej="${c.id}">수정 요청</button>${dlBtn}</div>`;
     }
     case 6: {
