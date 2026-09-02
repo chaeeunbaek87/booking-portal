@@ -3674,29 +3674,51 @@ RENDER.board = () => {
   $('reqList').querySelectorAll('[data-pvup]').forEach(b=>b.addEventListener('click',()=>{
     pvC=b.dataset.pvup; $('pvFileInp').value=''; $('pvFileInp').click();
   }));
+  /* 저장소 업로드가 막혀도 광고주가 다른 브라우저에서 볼 수 있도록, 가볍게 줄인 이미지를 함께 보관합니다 */
+  function shrinkDataUrl(dataUrl, maxW, q){
+    return new Promise(res=>{
+      const img=new Image();
+      img.onload=()=>{
+        try{
+          const sc=Math.min(1, maxW/img.naturalWidth);
+          const cv=document.createElement('canvas');
+          cv.width=Math.max(1,Math.round(img.naturalWidth*sc));
+          cv.height=Math.max(1,Math.round(img.naturalHeight*sc));
+          cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+          const out=cv.toDataURL('image/jpeg', q);
+          res(out.length<dataUrl.length?out:dataUrl);
+        }catch(e){ res(dataUrl); }
+      };
+      img.onerror=()=>res(dataUrl);
+      img.src=dataUrl;
+    });
+  }
   $('pvFileInp').addEventListener('change', async ()=>{
     const fl=[...$('pvFileInp').files]; if(!fl.length||!pvC) return;
     const c=CAMPAIGNS.find(x=>x.id===pvC); if(!c) return;
     const arr=pvList(c);
-    let cloudFailed=false;
+    let shrunk=false;
     for(let i=0;i<fl.length;i++){
       const f=fl[i];
       const path=`previews/${c.id}/${Date.now()}_${i}_${f.name}`;
       const readLocal=()=>new Promise(res=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.readAsDataURL(f);});
+      let url=null;
       try{
-        const url = (window.FB&&window.FB.online) ? await window.FB.uploadFile(path,f) : await readLocal();
-        arr.push(url);
-      }catch(e){
-        console.warn('preview cloud upload failed — falling back to local', e);
-        cloudFailed=true;
-        try{ arr.push(await readLocal()); }catch(e2){ console.warn('local fallback also failed', e2); }
+        if(window.FB&&window.FB.online) url=await window.FB.uploadFile(path,f);
+      }catch(e){ console.warn('preview cloud upload failed — 압축 후 로컬 보관', e); }
+      if(!url || url.startsWith('blob:') || url.startsWith('data:')){
+        try{
+          const raw = (url&&url.startsWith('data:')) ? url : await readLocal();
+          url = await shrinkDataUrl(raw, 1000, 0.72);
+          shrunk=true;
+        }catch(e2){ console.warn('local fallback failed', e2); url=null; }
       }
+      if(url) arr.push(url);
     }
-    toast(cloudFailed
-      ? `프리뷰 ${fl.length}장 등록 완료 — 이미지 저장소 연결이 원활하지 않아 이 브라우저에만 보관됩니다`
-      : `프리뷰 ${fl.length}장 등록 완료 — 광고주 승인 대기 상태가 됩니다 ✓`);
-    c.pvRejectNote=undefined;   /* 재업로드하면 반려 상태 해제 → 광고주 승인 대기로 복귀 */
+    markDirty(c.id);
+    c.pvRejectNote=undefined;   /* 재업로드하면 반려 상태 해제 → 광고주 확인 대기로 복귀 */
     RENDER.board();
+    toast(`프리뷰 ${fl.length}장 등록 완료 — 광고주 확인 대기 상태가 됩니다 ✓${shrunk?' (저장소 미연결로 압축본 전송)':''}`);
   });
   $('reqList').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.del); if(!c) return;
@@ -3780,7 +3802,7 @@ RENDER.board = () => {
   }));
   $('reqList').querySelectorAll('[data-pvok]').forEach(b=>b.addEventListener('click',()=>{
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.pvok); if(!c) return;
-    c.pvConfirmed=true; c.pvRejectNote=undefined; c.uiStep=undefined; syncAuto(c);
+    c.pvConfirmed=true; c.pvRejectNote=undefined; c.uiStep=undefined; markDirty(c.id); syncAuto(c);
     toast('미리보기 확인이 완료되었어요 ✓ 일정에 맞춰 광고가 시작됩니다');
     RENDER.board();
   }));
@@ -3788,7 +3810,7 @@ RENDER.board = () => {
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.pvrej); if(!c) return;
     const note=window.prompt('수정이 필요한 내용을 알려주세요','프리뷰 이미지에 수정이 필요합니다');
     if(note===null) return;
-    c.pvRejectNote=note||'프리뷰 수정이 필요합니다'; c.pvConfirmed=false; c.uiStep=undefined;
+    c.pvRejectNote=note||'프리뷰 수정이 필요합니다'; c.pvConfirmed=false; c.uiStep=undefined; markDirty(c.id);
     toast('수정 요청을 보냈어요 — 담당자에게 사유가 전달됩니다');
     RENDER.board();
   }));
@@ -4410,8 +4432,34 @@ let _fbLastSynced='';
    → 동기화 payload에서는 이미지 원본을 자리표시자로 바꿔 보내고, 받을 때 로컬 이미지를 되살립니다.
    (Supabase Storage가 연결돼 있으면 이미지는 https URL이 되어 그대로 동기화됩니다) */
 const LOCAL_IMG='__LOCAL_IMAGE__';
+const SYNC_LIMIT=900000;   /* Firestore 문서 1MiB — 여유를 두고 900KB로 제한 */
 function slimForSync(state){
-  return JSON.parse(JSON.stringify(state, (k,v)=> (typeof v==='string'&&v.startsWith('data:')) ? LOCAL_IMG : v));
+  /* 소재 원본 이미지(용량이 큼)만 자리표시자로 바꾸고,
+     게재 프리뷰는 광고주가 다른 브라우저에서 확인해야 하므로 그대로 함께 전송합니다. */
+  const camps=(state.CAMPAIGNS||[]).map(c=>{
+    const cc={...c};
+    if(Array.isArray(c.items)) cc.items=c.items.map(it=>{
+      if(!it.creative) return it;
+      const cr={...it.creative};
+      if(Array.isArray(cr.imgs)) cr.imgs=cr.imgs.map(im=>
+        (im&&typeof im.src==='string'&&im.src.startsWith('data:')) ? {...im, src:LOCAL_IMG} : im);
+      return {...it, creative:cr};
+    });
+    return cc;
+  });
+  let out=JSON.parse(JSON.stringify({CAMPAIGNS:camps, ACCOUNTS:state.ACCOUNTS}));
+  /* 용량 초과 시 오래된 캠페인의 프리뷰부터 제외 */
+  if(JSON.stringify(out).length>SYNC_LIMIT){
+    const order=out.CAMPAIGNS.map((c,i)=>i).sort((a,b)=>(out.CAMPAIGNS[a].reqAt||0)-(out.CAMPAIGNS[b].reqAt||0));
+    for(const i of order){
+      const c=out.CAMPAIGNS[i];
+      if(Array.isArray(c.previewImgs)&&c.previewImgs.length){
+        c.previewImgs=c.previewImgs.map(u=>(typeof u==='string'&&u.startsWith('data:'))?LOCAL_IMG:u);
+        if(JSON.stringify(out).length<=SYNC_LIMIT) break;
+      }
+    }
+  }
+  return out;
 }
 function restoreLocalImgs(rc, lc){
   if(!rc) return rc;
