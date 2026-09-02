@@ -500,6 +500,12 @@ textarea.text-input{resize:none;line-height:1.5}
 .pv-x:hover{background:var(--warn)}
 .pv-dl{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(17,20,18,.72);color:#fff;font-size:12px;font-weight:800;cursor:pointer;line-height:1}
 .pv-dl:hover{background:var(--hd-green)}
+.tax-view{margin-top:10px;border:1px solid var(--line-soft);border-radius:11px;background:#fff;padding:4px 12px}
+.tax-view .tv-r{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #F3F5F4;font-size:12.5px}
+.tax-view .tv-r:last-child{border-bottom:none}
+.tax-view .tv-r span{color:var(--ink-3);font-weight:600}
+.tax-view .tv-r b{color:var(--ink-1);text-align:right;word-break:break-all}
+.adj-row .adj-dr{font-size:11px;color:var(--ink-3);white-space:nowrap}
 .live-note{margin-top:10px;background:var(--hd-soft);color:var(--hd-deep);font-weight:800;font-size:14px;border-radius:10px;padding:12px 16px;display:inline-block}
 .slot-badge2{display:inline-block;font-size:10.5px;font-weight:700;background:#F1F3F2;border-radius:6px;padding:3px 8px;margin:0 4px 0 0;color:var(--ink-2)}
 
@@ -831,10 +837,10 @@ textarea.text-input{resize:none;line-height:1.5}
 .slot-brief .sb-p{text-align:right;flex-shrink:0}
 /* ═══════ 폰 목업 (내부 세팅툴 이식) ═══════ */
 .preview-col{position:sticky;top:84px}
-.preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.preview-head .pv-title{font-size:13px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;gap:8px}
-.preview-head .pv-device{font-size:10.5px;font-weight:600;color:var(--ink-3);opacity:.5;letter-spacing:-.2px}
-.preview-head .pv-right{display:flex;align-items:center;gap:9px}
+.preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+.preview-head .pv-title{font-size:13px;font-weight:700;color:var(--ink-2);display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;min-width:0;flex:1 1 auto}
+.preview-head .pv-device{font-size:10.5px;font-weight:600;color:var(--ink-3);opacity:.5;letter-spacing:-.2px;white-space:nowrap}
+.preview-head .pv-right{display:flex;align-items:center;gap:9px;flex:0 0 auto}
 .pv-dl{border:1px solid var(--line-soft);background:#fff;color:var(--ink-2);font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:9px;cursor:pointer;transition:all .15s;white-space:nowrap}
 .pv-dl:hover{border-color:var(--hd-green);color:var(--hd-deep);background:var(--hd-soft)}
 .pv-dl:disabled{opacity:.5;cursor:default}
@@ -1730,7 +1736,7 @@ init();
         <div class="field" style="margin:0"><label>판매 경로</label><select class="text-input" id="bkAgency"><option value="">직접 판매</option><option>인크로스</option><option>나스미디어</option><option>메조미디어</option><option>M2Digital</option><option>이앤피미디어</option><option value="__new">＋ 새 대행사</option></select></div>
         <div class="field" style="margin:0"><label>시작일 <span class="req">*</span></label><input type="date" class="text-input" id="bkStart"></div>
         <div class="field" style="margin:0"><label>종료일 <span class="req">*</span></label><input type="date" class="text-input" id="bkEnd"></div>
-        <div class="field" style="margin:0"><label>할인율 (%)</label><input type="number" class="text-input" id="bkDc" value="0" min="0" max="100"></div>
+        <div class="field" style="margin:0"><label>판매가 (원) <span style="font-weight:600;color:var(--ink-3);font-size:10.5px">미입력 시 공시가</span></label><input type="text" class="text-input" id="bkNet" placeholder="공시가와 동일" inputmode="numeric"></div>
       </div>
       <div class="bk-prods" id="bkProds"></div>
       <div class="price-line" style="margin-top:12px">
@@ -1904,7 +1910,7 @@ init();
 <input type="file" id="rptFileInp" hidden multiple>
 <div class="modal-bg" id="taxModal">
   <div class="modal" style="max-width:560px">
-    <div class="modal-head"><h3>세금계산서 발행 정보 등록</h3><button class="btn-ghost btn-sm" data-close="taxModal">닫기</button></div>
+    <div class="modal-head"><h3 id="taxModalTitle">세금계산서 발행 정보 등록</h3><button class="btn-ghost btn-sm" data-close="taxModal">닫기</button></div>
     <div class="modal-body">
       <div class="row-2">
         <div class="field"><label>사업자등록번호 <span class="req">*</span></label><input type="text" class="text-input" id="txBizNo" placeholder="000-00-00000"></div>
@@ -2351,7 +2357,16 @@ function setSlot(id, skipSave){
   /* STEP 3 */
   $('imgCard').style.display = id==='event'?'none':'';
   $('imgSpec').textContent = p.spec ? `${p.spec.w}×${p.spec.h}px${p.spec.strict?' 고정':' 권장'} · JPG/PNG` : (id==='headline'?'투명 PNG 권장':'자유 규격');
-  $('imgHint').innerHTML = IMG_HINTS[id]||'';
+  {
+    /* 여러 구좌를 부킹한 경우, 그 수만큼 소재를 등록하면 순차 노출됩니다 */
+    const _c = setupCamp!=='__new' ? CAMPAIGNS.find(x=>x.id===setupCamp) : null;
+    const _it = _c ? _c.items.find(i=>i.p===id) : cart[id];
+    const _q = _it ? (_it.qty||1) : 1;
+    const _n = (drafts[id]&&Array.isArray(drafts[id].imgs)) ? drafts[id].imgs.filter(Boolean).length : 0;
+    const _multi = _q>1
+      ? `<br><b style="color:var(--hd-deep)">${_q}구좌 부킹 — 소재를 ${_q}개까지 등록하면 순차 노출됩니다 (현재 ${_n}/${_q})</b>` : '';
+    $('imgHint').innerHTML = (IMG_HINTS[id]||'') + _multi;
+  }
   renderUp3(); buildGuide(p);
 
   /* STEP 4 */
@@ -2991,10 +3006,12 @@ $('taxSaveBtn').addEventListener('click',()=>{
   const no=$('txBizNo').value.trim(), corp=$('txCorp').value.trim(), ceo=$('txCeo').value.trim(), email=$('txEmail').value.trim();
   if(!no||!corp||!email) return toast('사업자등록번호 · 상호 · 이메일은 필수 항목이에요');
   if(!/^\d{3}-?\d{2}-?\d{5}$/.test(no)) return toast('사업자등록번호 형식을 확인해 주세요 (000-00-00000)');
+  const upd=!!c.tax;
   c.tax={no,corp,ceo,email,reqDate:$('txDate').value};
   if(stIdx(c)===7) c.status='세금계산서 발행';
+  markDirty(c.id);
   $('taxModal').classList.remove('show');
-  toast('세금계산서 발행 정보가 등록됐어요 — 요청일 기준 일괄 발행됩니다');
+  toast(upd?'세금계산서 발행 정보를 수정했어요':'세금계산서 발행 정보가 등록됐어요 — 요청일 기준 일괄 발행됩니다');
   if($('pg-board').classList.contains('on')) RENDER.board();
   
 });
@@ -3099,8 +3116,10 @@ function bkTotals(){
   const wks=weeksOf(s,e);
   let list=0;
   Object.entries(bkSel).forEach(([pid,st])=>{ list+=bkItemPrice(pid,st.qty,wks,st.vol||0); });
-  const dc=Math.min(100,Math.max(0,+$('bkDc').value||0));
-  const net=Math.round(list*(1-dc/100));
+  /* 판매가를 직접 입력하고, 할인율은 공시가 대비 자동 계산합니다 */
+  const raw=($('bkNet').value||'').replace(/[^0-9]/g,'');
+  const net=raw===''?list:Math.max(0,+raw);
+  const dc=list>0?Math.max(0,Math.round((1-net/list)*1000)/10):0;
   const ag=$('bkAgency').value;
   const dep=Math.round(net*(ag?0.7:1));
   return {list,net,dep,dc,wks,ag,s,e};
@@ -3108,12 +3127,12 @@ function bkTotals(){
 function updBkSummary(){
   const t=bkTotals();
   $('bkList').textContent=fmt(t.list);
-  $('bkNetSale').textContent=fmt(t.net)+(t.dc?` (−${t.dc}%)`:'');
+  $('bkNetSale').textContent=fmt(t.net)+(t.dc?` (할인 ${t.dc}%)`:'');
   $('bkDeposit').textContent=fmt(t.dep);
   $('bkFeeNote').textContent=t.ag?'대행 수수료 30% 차감':'직접 판매 · 수수료 없음';
 }
-['bkStart','bkEnd','bkDc','bkAgency'].forEach(x=>$(x).addEventListener('change',updBkSummary));
-$('bkDc').addEventListener('input',updBkSummary);
+['bkStart','bkEnd','bkNet','bkAgency'].forEach(x=>$(x).addEventListener('change',updBkSummary));
+$('bkNet').addEventListener('input',updBkSummary);
 $('bkAdd').addEventListener('click',()=>{
   const adv=$('bkAdv').value.trim();
   if(!adv) return toast('광고주명을 입력해 주세요');
@@ -3126,14 +3145,14 @@ $('bkAdd').addEventListener('click',()=>{
     const base=bkItemPrice(pid,st.qty,t.wks,st.vol||0);
     return {p:pid, qty:st.qty, s:t.s, e:P[pid].unit==='send'?t.s:t.e,
       vol:st.vol?st.vol*10000:undefined,
-      sale:Math.round(base*(1-t.dc/100))};
+      sale:t.list>0?Math.round(base*(t.net/t.list)):base};   /* 판매가 비율대로 구좌별 배분 */
   });
   CAMPAIGNS.push({id:'c'+Date.now(), adv, agency:ag||null,
     name:$('bkName').value.trim()||`${adv} ${dParse(t.s).getMonth()+1}월 캠페인`,
     status:'부킹 승인', items});
-  bkSel={}; $('bkAdv').value=''; $('bkName').value=''; $('bkDc').value=0;
+  bkSel={}; $('bkAdv').value=''; $('bkName').value=''; $('bkNet').value='';
   buildBkProds(); updBkSummary(); RENDER.board();
-  toast(`부킹 등록 완료 — ${adv} · ${fmt(t.net)} (상태: 부킹 승인 — 광고주 서류·소재 등록 대기)`);
+  toast(`부킹 등록 완료 — ${adv} · ${fmt(t.net)}`);
 });
 const renderInv = () => {
   const soldOf=(pid,ds)=>{
@@ -3358,8 +3377,13 @@ let boardFilter='전체';
 let pendingDoc=null;
 const DOC_DEF=[['contract','서명된 청약서',''],['biz','법인사업자등록증 사본','신규 업체'],['bank','통장 사본','신규 업체'],['seal','인감증명서 사본','신규 업체'],['etc','기타 서류','필요 시']];
 function campThumb(c){
-  const it=c.items.find(i=>i.creative&&i.creative.imgs&&i.creative.imgs.some(Boolean));
-  if(it) return `<img class="req-thumb" src="${it.creative.imgs.find(Boolean).src||it.creative.imgs.find(Boolean)}" alt="">`;
+  /* 등록된 소재 중 가장 비싼 구좌의 이미지를 대표로 보여줍니다 */
+  const cand=c.items.filter(i=>i.creative&&Array.isArray(i.creative.imgs)&&i.creative.imgs.some(x=>x&&(x.src||typeof x==='string')));
+  if(cand.length){
+    cand.sort((a,b)=>((b.sale||0)*(b.qty||1))-((a.sale||0)*(a.qty||1)));
+    const im=cand[0].creative.imgs.find(x=>x&&(x.src||typeof x==='string'));
+    return `<img class="req-thumb" src="${im.src||im}" alt="">`;
+  }
   return `<div class="req-thumb noimg">소재<br>미등록</div>`;
 }
 function pvList(c){ if(!c.previewImgs){ c.previewImgs = c.previewImg?[c.previewImg]:[]; delete c.previewImg; } return c.previewImgs; }
@@ -3533,11 +3557,19 @@ function stepDetail(c,i,admin){
     case 7: return `${soon}<div class="sd-t">광고 집행이 완료되었습니다</div>
       GA 리포트는 광고 종료 후 <b>영업일 기준 3일 이내</b>, 연계 매출 데이터는 광고 종료 후 <b>영업일 기준 7일 이내</b> 등록됩니다.<br>
       추가 데이터를 요청하신 경우 등록일이 변경될 수 있습니다.
-      <div class="bk-actions">${c.report?'<button class="act-btn" data-act="report" data-c="'+c.id+'">📊 결과 리포트 보기</button>':''}${(c.reportFiles||[]).length?`<button class="act-btn primary" data-rptdl="${c.id}">⬇ 리포트 전체 다운로드 (${c.reportFiles.length})</button>`:'<span class="hint" style="margin:0">담당자가 리포트를 등록하면 이곳에서 내려받을 수 있어요</span>'}</div>`;
+      <div class="bk-actions">${c.report?'<button class="act-btn" data-act="report" data-c="'+c.id+'">📊 결과 리포트 보기</button>':''}${(c.reportFiles||[]).filter(f=>f&&f.url).length?`<button class="act-btn primary" data-rptdl="${c.id}">⬇ 리포트 전체 다운로드 (${(c.reportFiles||[]).filter(f=>f&&f.url).length})</button>`:'<span class="hint" style="margin:0">담당자가 리포트를 등록하면 이곳에서 내려받을 수 있어요</span>'}</div>`;
     case 8: return `${soon}<div class="sd-t">세금계산서 발행 안내</div>
       집행 종료일 기준 <b>해당 월</b>로 세금계산서 발행이 필요합니다. 아래 메일로 발행해 주세요.<br>
       수신 메일 : <b>hda21455km1@thehyundai.com</b>
-      <div class="bk-actions">${c.tax?`<span class="doc-chip ok">✓ 발행 정보 등록 완료</span>`:`<button class="act-btn primary" data-act="tax" data-c="${c.id}">${admin?'세금계산서 정보 확인':'세금계산서 정보 등록'}</button>`}</div>`;
+      ${c.tax?`<div class="tax-view">
+        <div class="tv-r"><span>상호</span><b>${esc(c.tax.corp||'—')}</b></div>
+        <div class="tv-r"><span>사업자번호</span><b>${esc(c.tax.no||'—')}</b></div>
+        <div class="tv-r"><span>대표자</span><b>${esc(c.tax.ceo||'—')}</b></div>
+        <div class="tv-r"><span>담당자 메일</span><b>${esc(c.tax.email||'—')}</b></div>
+      </div>`:''}
+      <div class="bk-actions">${c.tax
+        ? `<span class="doc-chip ok">✓ 발행 정보 등록 완료</span><button class="act-btn" data-act="tax" data-c="${c.id}">발행 정보 ${admin?'확인':'확인 · 수정'}</button>`
+        : `<button class="act-btn primary" data-act="tax" data-c="${c.id}">${admin?'세금계산서 정보 확인':'세금계산서 정보 등록'}</button>`}</div>`;
   }
   return '';
 }
@@ -3676,25 +3708,6 @@ RENDER.board = () => {
   $('reqList').querySelectorAll('[data-pvup]').forEach(b=>b.addEventListener('click',()=>{
     pvC=b.dataset.pvup; $('pvFileInp').value=''; $('pvFileInp').click();
   }));
-  /* 저장소 업로드가 막혀도 광고주가 다른 브라우저에서 볼 수 있도록, 가볍게 줄인 이미지를 함께 보관합니다 */
-  function shrinkDataUrl(dataUrl, maxW, q){
-    return new Promise(res=>{
-      const img=new Image();
-      img.onload=()=>{
-        try{
-          const sc=Math.min(1, maxW/img.naturalWidth);
-          const cv=document.createElement('canvas');
-          cv.width=Math.max(1,Math.round(img.naturalWidth*sc));
-          cv.height=Math.max(1,Math.round(img.naturalHeight*sc));
-          cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-          const out=cv.toDataURL('image/jpeg', q);
-          res(out.length<dataUrl.length?out:dataUrl);
-        }catch(e){ res(dataUrl); }
-      };
-      img.onerror=()=>res(dataUrl);
-      img.src=dataUrl;
-    });
-  }
   $('pvFileInp').addEventListener('change', async ()=>{
     const fl=[...$('pvFileInp').files]; if(!fl.length||!pvC) return;
     const c=CAMPAIGNS.find(x=>x.id===pvC); if(!c) return;
@@ -3850,8 +3863,9 @@ RENDER.board = () => {
     if(act==='report') openReport(c);
     if(act==='tax'){
       taxCampId=c.id;
-      if(c.tax){ $('txBizNo').value=c.tax.no; $('txCorp').value=c.tax.corp; $('txCeo').value=c.tax.ceo||''; $('txEmail').value=c.tax.email; }
+      if(c.tax){ $('txBizNo').value=c.tax.no; $('txCorp').value=c.tax.corp; $('txCeo').value=c.tax.ceo||''; $('txEmail').value=c.tax.email; if(c.tax.reqDate) $('txDate').value=c.tax.reqDate; }
       else { ['txBizNo','txCorp','txCeo','txEmail'].forEach(x=>$(x).value=''); }
+      $('taxModalTitle').textContent = c.tax ? '세금계산서 발행 정보 확인 · 수정' : '세금계산서 발행 정보 등록';
       $('txDate').value=campEnd(c);
       $('taxModal').classList.add('show');
     }
@@ -4332,7 +4346,7 @@ function renderAdjust(){
         <div class="ad">${kdate(it.s)} ~ ${kdate(it.e)}${it.tg?' · 타겟팅':''}</div>
       </div>
       ${p.slots?`<span class="qty-ctl" style="margin:0"><button type="button" data-aqm="${idx}">−</button><b>${it.qty||1}</b><button type="button" data-aqp="${idx}">＋</button></span>`:''}
-      <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--ink-3)">할인 <input class="ap" data-adr="${idx}" style="width:48px;text-align:right" value="${(()=>{const l=listOf(it);return l>0?Math.max(0,Math.round((1-it.sale*(it.qty||1)/l)*1000)/10):0;})()}">%</span>
+      <span class="adj-dr">${(()=>{const l=listOf(it);const r=l>0?Math.max(0,Math.round((1-it.sale*(it.qty||1)/l)*1000)/10):0;return `공시가 ${fmtN(l)}원 · 할인 <b${r>0?' style="color:#C2402A"':''}>${r}%</b>`;})()}</span>
       <input class="ap" data-ap="${idx}" value="${fmtN(it.sale*(it.qty||1))}"> <span style="font-size:11px;color:var(--ink-3)">원</span>
       ${added?`<button class="ax" data-ar="${idx}" type="button">삭제</button>`:''}
     </div>`;
@@ -4342,7 +4356,7 @@ function renderAdjust(){
   const lsum=adjItems.reduce((a,x)=>a+listOf(x),0);
   const drate=lsum>0?Math.max(0,Math.round((1-sum/lsum)*1000)/10):0;
   $('adjBody').innerHTML=`
-    <p class="hint" style="margin:0 0 4px">「${esc(adjC.name)}」 · ${esc(adjC.adv)} — 금액을 조정하거나 서비스 구좌를 추가할 수 있어요 (0원 = 무상 서비스)</p>
+    <p class="hint" style="margin:0 0 4px">「${esc(adjC.name)}」 · ${esc(adjC.adv)} — <b>판매 금액을 직접 입력</b>하면 할인율이 자동 계산됩니다 (0원 = 무상 서비스)</p>
     ${rows}
     <div style="font-size:11.5px;font-weight:800;color:var(--ink-3);margin:14px 0 0">구좌 추가</div>
     <div class="adj-addlist">${addable.map(p=>`<button type="button" data-aa="${p.id}">+ ${p.name}</button>`).join('')||'<span class="hint" style="margin:0">추가 가능한 구좌가 없어요</span>'}</div>
@@ -4358,12 +4372,6 @@ function renderAdjust(){
     const it=adjItems[+inp.dataset.ap];
     const v=+inp.value.replace(/[^0-9]/g,'')||0;
     it.sale=Math.round(v/(it.qty||1));
-    renderAdjust();
-  }));
-  $('adjBody').querySelectorAll('[data-adr]').forEach(inp=>inp.addEventListener('change',()=>{
-    const it=adjItems[+inp.dataset.adr];
-    const dr=Math.min(100,Math.max(0,parseFloat(inp.value.replace(/[^0-9.]/g,''))||0));
-    it.sale=Math.round(listOf(it)*(1-dr/100)/(it.qty||1));
     renderAdjust();
   }));
   $('adjBody').querySelectorAll('[data-aqm],[data-aqp]').forEach(b=>b.addEventListener('click',()=>{
@@ -4444,16 +4452,43 @@ let rptC=null;
    화면을 다시 그릴 때(RENDER.xxx)마다 자동으로 클라우드에 반영되고,
    다른 브라우저·기기에서 바뀐 내용은 실시간으로 이 화면에도 반영됩니다.
    window.FB는 /head의 모듈 스크립트가 준비되면 'fb-ready' 이벤트로 알려줍니다. */
+/* 이미지 축소 — 저장소가 막혀 있어도 다른 브라우저에서 볼 수 있도록 가벼운 사본을 만듭니다 */
+function shrinkDataUrl(dataUrl, maxW, q){
+  return new Promise(res=>{
+    if(typeof dataUrl!=='string'||!dataUrl.startsWith('data:image')) return res(dataUrl);
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        const sc=Math.min(1, maxW/img.naturalWidth);
+        const cv=document.createElement('canvas');
+        cv.width=Math.max(1,Math.round(img.naturalWidth*sc));
+        cv.height=Math.max(1,Math.round(img.naturalHeight*sc));
+        cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+        const out=cv.toDataURL('image/jpeg', q);
+        res(out.length<dataUrl.length?out:dataUrl);
+      }catch(e){ res(dataUrl); }
+    };
+    img.onerror=()=>res(dataUrl);
+    img.src=dataUrl;
+  });
+}
 async function uploadDraftImages(d, pathPrefix){
-  if(!d||!d.imgs||!window.FB||!window.FB.online) return;
+  if(!d||!d.imgs) return;
   for(let i=0;i<d.imgs.length;i++){
     const im=d.imgs[i];
-    if(im&&typeof im.src==='string'&&im.src.startsWith('data:')){
+    if(!im||typeof im.src!=='string') continue;
+    if(im.src.startsWith('data:')){
       const m=/^data:image\/([a-z0-9+]+)/i.exec(im.src);
       const ex=m ? (m[1].toLowerCase()==='jpeg'?'jpg':m[1].toLowerCase()) : 'jpg';
-      try{ im.src = await window.FB.uploadDataUrl(`${pathPrefix}/img${i}_${Date.now()}.${ex}`, im.src); }
-      catch(e){ console.warn('creative image upload failed', e); }
+      if(window.FB&&window.FB.online){
+        try{ im.src = await window.FB.uploadDataUrl(`${pathPrefix}/img${i}_${Date.now()}.${ex}`, im.src); }
+        catch(e){ console.warn('creative image upload failed', e); }
+      }
     }
+    /* 원본이 여전히 data:라면 동기화용 축소본을 함께 보관 (원본은 로컬 다운로드용으로 유지) */
+    if(im.src.startsWith('data:')){
+      try{ im.syncSrc = await shrinkDataUrl(im.src, 900, 0.68); }catch(e){}
+    } else { delete im.syncSrc; }
   }
 }
 let _fbLastSynced='';
@@ -4470,8 +4505,12 @@ function slimForSync(state){
     if(Array.isArray(c.items)) cc.items=c.items.map(it=>{
       if(!it.creative) return it;
       const cr={...it.creative};
-      if(Array.isArray(cr.imgs)) cr.imgs=cr.imgs.map(im=>
-        (im&&typeof im.src==='string'&&im.src.startsWith('data:')) ? {...im, src:LOCAL_IMG} : im);
+      if(Array.isArray(cr.imgs)) cr.imgs=cr.imgs.map(im=>{
+        if(!im||typeof im.src!=='string') return im;
+        if(!im.src.startsWith('data:')){ const o={...im}; delete o.syncSrc; return o; }
+        const o={...im, src: im.syncSrc || LOCAL_IMG};   /* 축소본이 있으면 그것을 전송 */
+        delete o.syncSrc; return o;
+      });
       return {...it, creative:cr};
     });
     return cc;
@@ -4480,12 +4519,15 @@ function slimForSync(state){
   /* 용량 초과 시 오래된 캠페인의 프리뷰부터 제외 */
   if(JSON.stringify(out).length>SYNC_LIMIT){
     const order=out.CAMPAIGNS.map((c,i)=>i).sort((a,b)=>(out.CAMPAIGNS[a].reqAt||0)-(out.CAMPAIGNS[b].reqAt||0));
-    for(const i of order){
-      const c=out.CAMPAIGNS[i];
-      if(Array.isArray(c.previewImgs)&&c.previewImgs.length){
-        c.previewImgs=c.previewImgs.map(u=>(typeof u==='string'&&u.startsWith('data:'))?LOCAL_IMG:u);
-        if(JSON.stringify(out).length<=SYNC_LIMIT) break;
-      }
+    /* ① 오래된 캠페인의 소재 이미지 → ② 리포트 파일 → ③ 프리뷰 순으로 제외 */
+    const shed=[
+      c=>{ (c.items||[]).forEach(it=>{ if(it.creative&&Array.isArray(it.creative.imgs))
+             it.creative.imgs=it.creative.imgs.map(im=>(im&&typeof im.src==='string'&&im.src.startsWith('data:'))?{...im,src:LOCAL_IMG}:im); }); },
+      c=>{ if(Array.isArray(c.reportFiles)) c.reportFiles=c.reportFiles.map(f=>(f&&typeof f.url==='string'&&f.url.startsWith('data:'))?{...f,url:LOCAL_IMG}:f); },
+      c=>{ if(Array.isArray(c.previewImgs)) c.previewImgs=c.previewImgs.map(u=>(typeof u==='string'&&u.startsWith('data:'))?LOCAL_IMG:u); },
+    ];
+    outer: for(const fn of shed){
+      for(const i of order){ fn(out.CAMPAIGNS[i]); if(JSON.stringify(out).length<=SYNC_LIMIT) break outer; }
     }
   }
   return out;
@@ -4506,6 +4548,11 @@ function restoreLocalImgs(rc, lc){
   });
   if(Array.isArray(rc.previewImgs))
     rc.previewImgs=rc.previewImgs.map((u,i)=> u===LOCAL_IMG ? ((lc&&lc.previewImgs&&lc.previewImgs[i])||null) : u).filter(Boolean);
+  if(Array.isArray(rc.reportFiles))
+    rc.reportFiles=rc.reportFiles.map((f,i)=>{
+      if(f&&f.url===LOCAL_IMG){ const lf=lc&&lc.reportFiles&&lc.reportFiles[i]; return {...f, url:(lf&&lf.url&&lf.url!==LOCAL_IMG)?lf.url:null}; }
+      return f;
+    });
   return rc;
 }
 let _syncWarnAt=0;
@@ -4562,19 +4609,26 @@ $('rptFileInp').addEventListener('change', async ()=>{
   const fl=[...$('rptFileInp').files]; if(!fl.length||!rptC) return;
   const c=CAMPAIGNS.find(x=>x.id===rptC); if(!c) return;
   c.report=c.report||{imps:1050000,clicks:7400,sales:'1.8억원',daily:[120,140,155,150,160,165,160]};
-  const uploaded=[];
+  const uploaded=[]; let heavy=0;
+  const readAsDataUrl=f=>new Promise(res=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.onerror=()=>res(null);rd.readAsDataURL(f);});
   for(const f of fl){
     const path=`reports/${c.id}/${Date.now()}_${f.name}`;
-    try{
-      const url=(window.FB&&window.FB.online) ? await window.FB.uploadFile(path,f) : null;
-      uploaded.push({name:f.name, url});
-    }catch(e){ uploaded.push({name:f.name, url:null}); }
+    let url=null;
+    try{ if(window.FB&&window.FB.online) url=await window.FB.uploadFile(path,f); }
+    catch(e){ console.warn('report cloud upload failed', e); }
+    if(!url || url.startsWith('blob:')){
+      /* 저장소가 막혀도 광고주가 내려받을 수 있도록 파일 자체를 보관합니다 */
+      if(f.size<=700*1024){ url=await readAsDataUrl(f); }
+      else { url=await readAsDataUrl(f); heavy++; }   /* 용량이 크면 동기화에서 제외될 수 있음 */
+    }
+    uploaded.push({name:f.name, url, size:f.size});
   }
   c.reportFiles=(c.reportFiles||[]).concat(uploaded);
   c.reportName=c.reportFiles[c.reportFiles.length-1].name;
-  toast(`리포트 파일 ${fl.length}개 업로드 완료 — 리포트 등록으로 계산서 단계로 전환됩니다 ✓`);
+  markDirty(c.id);
   rptC=null;
   RENDER.board();
+  toast(`리포트 파일 ${fl.length}개 업로드 완료 — 광고주 화면에서 바로 내려받을 수 있어요 ✓${heavy?` (${heavy}개는 용량이 커 전달이 지연될 수 있어요)`:''}`);
 });
 
 </script>
