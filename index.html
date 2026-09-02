@@ -498,6 +498,8 @@ textarea.text-input{resize:none;line-height:1.5}
 .pv-shot img{width:100%;display:block}
 .pv-x{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(17,20,18,.72);color:#fff;font-size:12px;font-weight:800;cursor:pointer;line-height:1}
 .pv-x:hover{background:var(--warn)}
+.pv-dl{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(17,20,18,.72);color:#fff;font-size:12px;font-weight:800;cursor:pointer;line-height:1}
+.pv-dl:hover{background:var(--hd-green)}
 .live-note{margin-top:10px;background:var(--hd-soft);color:var(--hd-deep);font-weight:800;font-size:14px;border-radius:10px;padding:12px 16px;display:inline-block}
 .slot-badge2{display:inline-block;font-size:10.5px;font-weight:700;background:#F1F3F2;border-radius:6px;padding:3px 8px;margin:0 4px 0 0;color:var(--ink-2)}
 
@@ -3494,24 +3496,25 @@ function stepDetail(c,i,admin){
     case 5: {
       const its=c.items.map(x=>P[x.p].name+((x.qty||1)>1?' ×'+x.qty:'')).join(' · ');
       const pvs=pvList(c);
-      const gal=pvs.length?`<div class="pv-gal">${pvs.map((src,x)=>`<div class="pv-shot">${admin?`<button class="pv-x" data-pvdel="${c.id}:${x}" type="button">✕</button>`:''}<img src="${src}" alt="게재 프리뷰"></div>`).join('')}</div>`:'';
+      const gal=pvs.length?`<div class="pv-gal">${pvs.map((src,x)=>`<div class="pv-shot">${admin?`<button class="pv-x" data-pvdel="${c.id}:${x}" type="button">✕</button>`:''}<button class="pv-dl" data-pvdl="${c.id}:${x}" type="button" title="이 프리뷰 저장">⬇</button><img src="${src}" alt="게재 프리뷰"></div>`).join('')}</div>` : '';
+      const galDl=pvs.length?`<button class="act-btn" data-pvdlall="${c.id}">⬇ 게재 프리뷰 ${pvs.length>1?`${pvs.length}장 `:''}저장</button>`:'';
       if(admin){
         if(c.pvConfirmed) return `${soon}<span class="sd-soon">광고주 확정 완료</span><div class="sd-t">광고주가 프리뷰를 확정했어요</div>일정에 맞춰 광고가 시작됩니다.${gal}
-          <div class="bk-actions" style="margin-top:${pvs.length?'6':'10'}px"><button class="act-btn" data-pvup="${c.id}">프리뷰 추가 업로드</button></div>`;
+          <div class="bk-actions" style="margin-top:${pvs.length?'6':'10'}px"><button class="act-btn" data-pvup="${c.id}">프리뷰 추가 업로드</button>${galDl}</div>`;
         if(c.pvRejectNote) return `${soon}<span class="sd-soon" style="background:#FDECEA;color:#C2402A">광고주 수정 요청</span><div class="sd-t">광고주가 프리뷰 수정을 요청했어요</div>
           <div class="reject-note">요청 사유: ${esc(c.pvRejectNote)}</div>${gal}
-          <div class="bk-actions" style="margin-top:${pvs.length?'6':'10'}px"><button class="act-btn primary" data-pvup="${c.id}">프리뷰 다시 업로드</button><button class="act-btn" data-matgo="${c.id}">등록 소재 확인</button></div>`;
+          <div class="bk-actions" style="margin-top:${pvs.length?'6':'10'}px"><button class="act-btn primary" data-pvup="${c.id}">프리뷰 다시 업로드</button><button class="act-btn" data-matgo="${c.id}">등록 소재 확인</button>${galDl}</div>`;
         if(!pvs.length) return `${soon}<div class="sd-t">소재 승인이 완료되어 광고 예정입니다. 프리뷰 화면을 등록해 주세요.</div>
           프리뷰를 등록하면 광고주가 확인 후 최종 확정하게 됩니다.
           <div class="bk-actions" style="margin-top:10px"><button class="act-btn primary" data-pvup="${c.id}">프리뷰 이미지 업로드</button></div>`;
         return `${soon}<span class="sd-soon">프리뷰 등록 완료 · 광고주 확인 대기</span><div class="sd-t">광고주 확인을 기다리고 있어요</div>${gal}
-          <div class="bk-actions" style="margin-top:6px"><button class="act-btn" data-pvup="${c.id}">프리뷰 추가 업로드</button></div>`;
+          <div class="bk-actions" style="margin-top:6px"><button class="act-btn" data-pvup="${c.id}">프리뷰 추가 업로드</button>${galDl}</div>`;
       }
       /* ─── 광고주 ─── */
       const dlBtn=`<button class="act-btn" data-pvgo="${c.id}">미리보기 확인 · 다운로드 ›</button>`;
       if(c.pvConfirmed) return `${soon}<span class="sd-soon">확정 완료</span><div class="sd-t">이대로 광고 예정입니다 — 일정에 맞춰 광고가 시작됩니다.</div>
         <b>구좌</b> &nbsp;${its}${gal}
-        <div class="bk-actions">${dlBtn}</div>`;
+        <div class="bk-actions">${dlBtn}${galDl}</div>`;
       if(c.pvRejectNote) return `${soon}<div class="sd-t">프리뷰 수정을 요청했어요</div>
         <div class="reject-note">요청 사유: ${esc(c.pvRejectNote)}</div>
         담당자가 프리뷰를 다시 등록하면 이곳에서 확인할 수 있습니다.
@@ -3521,7 +3524,7 @@ function stepDetail(c,i,admin){
         <p style="margin:10px 0 0;font-size:12.5px">${pvs.length
           ? '이대로 광고가 게시됩니다. 확인 후 <b>확정</b>해 주세요.'
           : '이대로 광고가 게시됩니다. <b>미리보기 확인 · 다운로드</b>에서 실제 게재 화면을 확인한 뒤 <b>확정</b>해 주세요.'}</p>
-        <div class="bk-actions"><button class="act-btn primary" data-pvok="${c.id}">✓ 확인했어요 · 이대로 광고 요청합니다</button><button class="act-btn danger" data-pvrej="${c.id}">수정 요청</button>${dlBtn}</div>`;
+        <div class="bk-actions"><button class="act-btn primary" data-pvok="${c.id}">✓ 확인했어요 · 이대로 광고 요청합니다</button><button class="act-btn danger" data-pvrej="${c.id}">수정 요청</button>${dlBtn}${galDl}</div>`;
     }
     case 6: {
       const its=c.items.map(x=>`${P[x.p].name}${(x.qty||1)>1?' ×'+x.qty:''}`).join(' · ');
@@ -3719,6 +3722,33 @@ RENDER.board = () => {
     RENDER.board();
     toast(`프리뷰 ${fl.length}장 등록 완료 — 광고주 확인 대기 상태가 됩니다 ✓${shrunk?' (저장소 미연결로 압축본 전송)':''}`);
   });
+  /* ─── 게재 프리뷰 이미지 저장 ─── */
+  async function savePreview(c, idx){
+    const pvs=pvList(c); const list = idx===null ? pvs.map((u,i)=>[u,i]) : [[pvs[idx],idx]];
+    let ok=0;
+    for(const [srcUrl,i] of list){
+      if(!srcUrl) continue;
+      try{
+        const blob=await (await fetch(srcUrl)).blob();
+        const ext=(blob.type&&blob.type.split('/')[1]||'png').replace('jpeg','jpg');
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url; a.download=`${c.name}_게재프리뷰_${i+1}.${ext}`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),10000);
+        ok++; await new Promise(r=>setTimeout(r,250));
+      }catch(e){ console.warn('preview download failed', e); window.open(srcUrl,'_blank'); }
+    }
+    if(ok) toast(`게재 프리뷰 ${ok}장을 저장했어요`);
+  }
+  $('reqList').querySelectorAll('[data-pvdl]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const [id,ix]=b.dataset.pvdl.split(':');
+    const c=CAMPAIGNS.find(x=>x.id===id); if(c) savePreview(c, +ix);
+  }));
+  $('reqList').querySelectorAll('[data-pvdlall]').forEach(b=>b.addEventListener('click',()=>{
+    const c=CAMPAIGNS.find(x=>x.id===b.dataset.pvdlall); if(c) savePreview(c, null);
+  }));
   $('reqList').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
     const c=CAMPAIGNS.find(x=>x.id===b.dataset.del); if(!c) return;
     if(!window.confirm(`「${c.name}」 부킹을 정말 삭제하시겠습니까?\n삭제하면 되돌릴 수 없습니다.`)) return;
